@@ -1,0 +1,70 @@
+=== Cell 2 ===
+Python List took: 0.029122 seconds
+Numpy Array took: 0.003926 seconds
+Pytorch Tensor (CPU) took: 0.002952 seconds
+=== Cell 3 ===
+1D Tensor: tensor([1, 2, 3, 4, 5])
+2D Tensor:
+tensor([[1, 2, 3],
+        [4, 5, 6]])
+3D Tensor:
+tensor([[[1, 2],
+         [3, 4]],
+
+        [[5, 6],
+         [7, 8]]])
+nD Tensor shape: torch.Size([2, 3, 4, 5])
+=== Cell 4 ===
+Tensor Sum: tensor([5, 7, 9])
+Tensor Difference: tensor([-3, -3, -3])
+Tensor Multiplication: tensor([ 4, 10, 18])
+Tensor Division: tensor([0.2500, 0.4000, 0.5000])
+Tensor Dot Product: 32
+Tensor Matrix Multiplication:
+tensor([[14, 32],
+        [32, 77]])
+=== Cell 5 ===
+Masked Tensor: tensor([3, 4, 5])
+Sub Tensor:
+tensor([[2, 3],
+        [5, 6]])
+Concatenated Tensor: tensor([1, 2, 3, 4, 5, 6])
+Stacked Tensor:
+tensor([[1, 2, 3],
+        [4, 5, 6]])
+=== Cell 6 ===
+Viewed Tensor:
+tensor([[1, 2],
+        [3, 4],
+        [5, 6]])
+Reshaped Tensor:
+tensor([[1, 2],
+        [3, 4],
+        [5, 6]])
+Unsqueezed Tensor:
+tensor([[1, 2, 3, 4, 5]])
+Squeezed Tensor:
+tensor([1, 2, 3, 4, 5])
+=== Cell 7 ===
+Original Tensor:
+tensor([[1, 2, 3],
+        [4, 5, 6]])
+Reshaped Tensor:
+tensor([[1, 2],
+        [3, 4],
+        [5, 6]])
+Original Numpy Array:
+[[1 2 3]
+ [4 5 6]]
+Numpy Reshaped Array:
+[[1 2]
+ [3 4]
+ [5 6]]
+=== Cell 8 ===
+Broadcasted Sum:
+tensor([[11, 21, 31],
+        [12, 22, 32],
+        [13, 23, 33]])
+=== Cell 9 ===
+In-place Modified Tensor: tensor([6, 7, 8])
+Out-of-place New Tensor: tensor([6, 7, 8])

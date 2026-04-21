@@ -1,0 +1,110 @@
+=== Cell 1 ===
+Device: cuda
+=== Cell 2 ===
+/opt/miniconda3/envs/AI/lib/python3.14/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+DatasetDict({
+    train: Dataset({
+        features: ['text', 'label'],
+        num_rows: 25000
+    })
+    test: Dataset({
+        features: ['text', 'label'],
+        num_rows: 25000
+    })
+    unsupervised: Dataset({
+        features: ['text', 'label'],
+        num_rows: 50000
+    })
+})
+
+Sample review:
+I rented I AM CURIOUS-YELLOW from my video store because of all the controversy that surrounded it when it was first released in 1967. I also heard that at first it was seized by U.S. customs if it ever tried to enter this country, therefore being a fan of films considered "controversial" I really h
+
+Label: 0
+=== Cell 3 ===
+Building vocabulary...
+Vocabulary size: 20,002
+Most common: [('the', 336194), ('and', 164129), ('a', 163091), ('of', 145849), ('to', 135710), ('is', 107318), ('in', 93945), ('it', 79128), ('i', 77188), ('this', 75977)]
+=== Cell 4 ===
+Train batches: 391 | Test batches: 391
+Batch shape: torch.Size([64, 512]) | Labels: tensor([1, 0, 1, 1, 1, 0, 1, 0])
+=== Cell 5 ===
+TextCNN(
+  (embedding): Embedding(20002, 128, padding_idx=0)
+  (convs): ModuleList(
+    (0): Conv1d(128, 100, kernel_size=(2,), stride=(1,))
+    (1): Conv1d(128, 100, kernel_size=(3,), stride=(1,))
+    (2): Conv1d(128, 100, kernel_size=(4,), stride=(1,))
+  )
+  (dropout): Dropout(p=0.5, inplace=False)
+  (fc): Linear(in_features=300, out_features=2, bias=True)
+)
+
+Trainable parameters: 2,676,358
+=== Cell 7 ===
+Epoch 01/10  train loss=0.6084  acc=0.6743  |  test  loss=0.4524  acc=0.7932  [6.6s]
+Epoch 02/10  train loss=0.4611  acc=0.7812  |  test  loss=0.3725  acc=0.8411  [6.2s]
+Epoch 03/10  train loss=0.4003  acc=0.8165  |  test  loss=0.3383  acc=0.8569  [6.3s]
+Epoch 04/10  train loss=0.3528  acc=0.8475  |  test  loss=0.3320  acc=0.8530  [6.4s]
+Epoch 05/10  train loss=0.3256  acc=0.8596  |  test  loss=0.3081  acc=0.8686  [6.4s]
+Epoch 06/10  train loss=0.3025  acc=0.8696  |  test  loss=0.2979  acc=0.8741  [6.4s]
+Epoch 07/10  train loss=0.2790  acc=0.8816  |  test  loss=0.2911  acc=0.8780  [6.4s]
+Epoch 08/10  train loss=0.2650  acc=0.8936  |  test  loss=0.2876  acc=0.8784  [6.4s]
+Epoch 09/10  train loss=0.2541  acc=0.8963  |  test  loss=0.2809  acc=0.8820  [6.4s]
+Epoch 10/10  train loss=0.2389  acc=0.9031  |  test  loss=0.2783  acc=0.8828  [6.5s]
+
+Best test accuracy: 0.8828
+=== Cell 8 ===
+<Figure size 1200x400 with 2 Axes>
+[image saved: img_cell8_0.png]
+=== Cell 9 ===
+
+--- k=[3], f=100 ---
+Epoch 01/5  train loss=0.6516  acc=0.6270  |  test  loss=0.5118  acc=0.7650  [2.9s]
+Epoch 02/5  train loss=0.5147  acc=0.7448  |  test  loss=0.4248  acc=0.8156  [2.9s]
+Epoch 03/5  train loss=0.4519  acc=0.7866  |  test  loss=0.3828  acc=0.8366  [2.9s]
+Epoch 04/5  train loss=0.4048  acc=0.8172  |  test  loss=0.3608  acc=0.8453  [2.9s]
+Epoch 05/5  train loss=0.3755  acc=0.8359  |  test  loss=0.3444  acc=0.8521  [2.9s]
+Best test acc: 0.8521
+
+--- k=[2,3,4], f=100 ---
+Epoch 01/5  train loss=0.6231  acc=0.6647  |  test  loss=0.4396  acc=0.8139  [6.5s]
+Epoch 02/5  train loss=0.4664  acc=0.7782  |  test  loss=0.3744  acc=0.8406  [6.5s]
+Epoch 03/5  train loss=0.4105  acc=0.8118  |  test  loss=0.3454  acc=0.8502  [6.5s]
+Epoch 04/5  train loss=0.3530  acc=0.8435  |  test  loss=0.3280  acc=0.8594  [6.5s]
+Epoch 05/5  train loss=0.3305  acc=0.8554  |  test  loss=0.3150  acc=0.8654  [6.5s]
+Best test acc: 0.8654
+
+--- k=[2,3,4], f=200 ---
+Epoch 01/5  train loss=0.5975  acc=0.6911  |  test  loss=0.3990  acc=0.8246  [10.7s]
+Epoch 02/5  train loss=0.4360  acc=0.7949  |  test  loss=0.3462  acc=0.8500  [10.7s]
+Epoch 03/5  train loss=0.3751  acc=0.8316  |  test  loss=0.3590  acc=0.8374  [10.7s]
+Epoch 04/5  train loss=0.3257  acc=0.8587  |  test  loss=0.3062  acc=0.8700  [10.7s]
+Epoch 05/5  train loss=0.3037  acc=0.8691  |  test  loss=0.2969  acc=0.8728  [10.7s]
+Best test acc: 0.8728
+
+--- k=[3,4,5], f=100 ---
+Epoch 01/5  train loss=0.6325  acc=0.6606  |  test  loss=0.4545  acc=0.8000  [7.1s]
+Epoch 02/5  train loss=0.4801  acc=0.7661  |  test  loss=0.3991  acc=0.8274  [7.1s]
+Epoch 03/5  train loss=0.4105  acc=0.8088  |  test  loss=0.3460  acc=0.8536  [7.1s]
+Epoch 04/5  train loss=0.3441  acc=0.8482  |  test  loss=0.3323  acc=0.8555  [7.1s]
+Epoch 05/5  train loss=0.3158  acc=0.8620  |  test  loss=0.3116  acc=0.8638  [7.1s]
+Best test acc: 0.8638
+=== Cell 10 ===
+Config                      Best Test Acc
+------------------------------------------
+k=[3], f=100                       0.8521
+k=[2,3,4], f=100                   0.8654
+k=[2,3,4], f=200                   0.8728
+k=[3,4,5], f=100                   0.8638
+<Figure size 900x500 with 1 Axes>
+[image saved: img_cell10_1.png]
+=== Cell 11 ===
+Review                                                                 Sentiment    Confidence
+-----------------------------------------------------------------------------------------------
+This movie was absolutely fantastic! The acting was superb and the p   positive     0.7030
+Terrible film. Boring, predictable, and a complete waste of time. I    negative     0.9991
+It was okay, nothing special. Some scenes were good but overall it f   negative     0.8561
+One of the best movies I've seen in years. A masterpiece of storytel   positive     0.9865

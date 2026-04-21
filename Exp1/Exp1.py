@@ -1,19 +1,10 @@
-# %% [markdown]
-# # Fundamentals of tensor operations using Pytorch and Numpy.
-
-# %%
 import torch
 import numpy as np
 import time
 
-# %% [markdown]
-# ## List vs Array vs Tensor
 
-# %%
-# List vs Array vs Tensor
 N = 1000000 
 
-# Python List
 list_one = list(range(N))
 list_two = list(range(N))
 
@@ -23,9 +14,6 @@ end_time = time.time()
 list_time = end_time - start_time
 print(f"Python List took: {list_time:.6f} seconds")
 
-# Numpy Array
-# Numpy arrays are homogeneous and stored in a contiguous memory block.
-# Operations are executed by highly optimized, pre-compiled C code.
 numpy_array_one = np.arange(N)
 numpy_array_two = np.arange(N)
 
@@ -35,10 +23,6 @@ end_time = time.time()
 numpy_time = end_time - start_time
 print(f"Numpy Array took: {numpy_time:.6f} seconds")
 
-# Pytorch Tensor
-# to Be or Not To Be That IS the Qution
-# Pytorch tensors are similar to Numpy arrays but with added features for
-# deep learning, like GPU acceleration and automatic differentiation.
 pytorch_tensor_one = torch.arange(N)
 pytorch_tensor_two = torch.arange(N)
 
@@ -49,49 +33,31 @@ tensor_time = end_time - start_time
 print(f"Pytorch Tensor (CPU) took: {tensor_time:.6f} seconds")
 
 
-# %% [markdown]
-# ## Create 1 D,2D and 3D tensors using Pytorch and Numpy.
-
-# %%
-# 1D Tensor
 tensor_1d_torch = torch.tensor([1, 2, 3, 4, 5])
 print(f"1D Tensor: {tensor_1d_torch}")
 
-# 2D Tensor
 tensor_2d_torch = torch.tensor([[1, 2, 3], [4, 5, 6]])
 print(f"2D Tensor:\n{tensor_2d_torch}")
 
-# 3D Tensor
 tensor_3d_torch = torch.tensor([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])
 print(f"3D Tensor:\n{tensor_3d_torch}")
 
-# nth Dimensional tensor
 tensor_nd_torch = torch.randn(2, 3, 4, 5)
 print(f"nD Tensor shape: {tensor_nd_torch.shape}")
 
-# %% [markdown]
-# ## Show basic operations : Element wise operations.
 
-# %%
-
-# Tensor addition
 tensor_a = torch.tensor([1, 2, 3])
 tensor_b = torch.tensor([4, 5, 6])
 tensor_sum = tensor_a + tensor_b
 
-# Tensor subtraction
 tensor_diff = tensor_a - tensor_b
 
-# Tensor multiplication
 tensor_mul = tensor_a * tensor_b
 
-# Tensor division
 tensor_div = tensor_a / tensor_b
 
-# Tensor dot product
 tensor_dot = torch.dot(tensor_a, tensor_b)
 
-# Tensor matrix multiplication
 tensor_matmul = torch.matmul(tensor_2d_torch, tensor_2d_torch.T)
 
 print(f"Tensor Sum: {tensor_sum}")
@@ -101,22 +67,14 @@ print(f"Tensor Division: {tensor_div}")
 print(f"Tensor Dot Product: {tensor_dot}")
 print(f"Tensor Matrix Multiplication:\n{tensor_matmul}")
 
-# %% [markdown]
-# ## Indexing and slicing operations( Boolean Masking, extracting subtensor.. etc)
 
-# %%
-
-# Boolean Masking
 mask = tensor_1d_torch > 2
 masked_tensor = tensor_1d_torch[mask]
 
-# Extracting subtensor
 sub_tensor = tensor_2d_torch[:, 1:]
 
-# Concatenating tensors
 concatenated_tensor = torch.cat((tensor_a, tensor_b), dim=0)
 
-# Stacking tensors
 stacked_tensor = torch.stack((tensor_a, tensor_b), dim=0)
 
 print(f"Masked Tensor: {masked_tensor}")
@@ -124,21 +82,13 @@ print(f"Sub Tensor:\n{sub_tensor}")
 print(f"Concatenated Tensor: {concatenated_tensor}")
 print(f"Stacked Tensor:\n{stacked_tensor}")
 
-# %% [markdown]
-# ## Use .view, .reshape .unsqueeze and squeeze function in pytorch
 
-# %%
-
-# .view
 viewed_tensor = tensor_2d_torch.view(3, 2)
 
-# .reshape
 reshaped_tensor = tensor_2d_torch.reshape(3, 2)
 
-# .unsqueeze
 unsqueezed_tensor = tensor_1d_torch.unsqueeze(0)
 
-# .squeeze
 squeezed_tensor = unsqueezed_tensor.squeeze(0)
 
 print(f"Viewed Tensor:\n{viewed_tensor}")
@@ -146,10 +96,7 @@ print(f"Reshaped Tensor:\n{reshaped_tensor}")
 print(f"Unsqueezed Tensor:\n{unsqueezed_tensor}")
 print(f"Squeezed Tensor:\n{squeezed_tensor}")
 
-# %% [markdown]
-# ## Compare with .reshape in numpy
 
-# %%
 tensor_c = torch.tensor([[1, 2, 3], [4, 5, 6]])
 reshaped_tensor = tensor_c.reshape(3, 2)
 
@@ -163,31 +110,19 @@ print(f"Original Numpy Array:\n{numpy_array}")
 print(f"Numpy Reshaped Array:\n{numpy_reshaped}")
 
 
-# %% [markdown]
-# ## Broadcasting
-
-# %%
-
 tensor_c = torch.tensor([[1], [2], [3]])
 tensor_d = torch.tensor([10, 20, 30])
 broadcasted_sum = tensor_c + tensor_d
 
 print(f"Broadcasted Sum:\n{broadcasted_sum}")
 
-# %% [markdown]
-# ## In place vs out of place operations
 
-# %%
-# In-place operation
 tensor_inplace = torch.tensor([1, 2, 3])
-tensor_inplace.add_(5)  # modifies tensor_inplace directly
+tensor_inplace.add_(5)
 
 print(f"In-place Modified Tensor: {tensor_inplace}")
 
-# Out-of-place operation
 tensor_outofplace = torch.tensor([1, 2, 3])
-tensor_new = tensor_outofplace + 5  # creates a new tensor
+tensor_new = tensor_outofplace + 5
 
 print(f"Out-of-place New Tensor: {tensor_new}")
-
-

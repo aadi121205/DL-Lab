@@ -1,0 +1,123 @@
+=== Cell 1 ===
+Device: cuda
+=== Cell 2 ===
+/opt/miniconda3/envs/AI/lib/python3.14/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+DatasetDict({
+    train: Dataset({
+        features: ['text', 'label'],
+        num_rows: 25000
+    })
+    test: Dataset({
+        features: ['text', 'label'],
+        num_rows: 25000
+    })
+    unsupervised: Dataset({
+        features: ['text', 'label'],
+        num_rows: 50000
+    })
+})
+
+Sample review:
+I rented I AM CURIOUS-YELLOW from my video store because of all the controversy that surrounded it when it was first released in 1967. I also heard that at first it was seized by U.S. customs if it ever tried to enter this country, therefore being a fan of films considered "controversial" I really h
+
+Label: 0
+=== Cell 3 ===
+Building vocabulary...
+Vocabulary size: 20,002
+=== Cell 4 ===
+Train batches: 391 | Test batches: 391
+Batch shape: torch.Size([64, 256]) | Labels: tensor([1, 0, 1, 1, 1, 0, 1, 0]) | Lengths: tensor([256, 256, 197, 130, 102, 139, 256, 131])
+=== Cell 5 ===
+BiLSTMSentiment(
+  (embedding): Embedding(20002, 128, padding_idx=0)
+  (lstm): LSTM(128, 128, num_layers=2, batch_first=True, dropout=0.5, bidirectional=True)
+  (dropout): Dropout(p=0.5, inplace=False)
+  (fc): Linear(in_features=256, out_features=2, bias=True)
+)
+
+Trainable parameters: 3,220,226
+=== Cell 7 ===
+Epoch 01/10  train loss=0.6454  acc=0.6124  |  test  loss=0.5550  acc=0.7073  [12.4s]
+Epoch 02/10  train loss=0.6069  acc=0.6647  |  test  loss=0.6875  acc=0.6908  [12.5s]
+Epoch 03/10  train loss=0.5189  acc=0.7484  |  test  loss=0.4910  acc=0.7676  [12.7s]
+Epoch 04/10  train loss=0.4434  acc=0.7991  |  test  loss=0.4587  acc=0.8008  [13.0s]
+Epoch 05/10  train loss=0.4077  acc=0.8195  |  test  loss=0.4395  acc=0.8205  [12.9s]
+Epoch 06/10  train loss=0.3701  acc=0.8392  |  test  loss=0.3808  acc=0.8418  [12.6s]
+Epoch 07/10  train loss=0.3378  acc=0.8552  |  test  loss=0.3800  acc=0.8526  [12.6s]
+Epoch 08/10  train loss=0.3216  acc=0.8648  |  test  loss=0.3708  acc=0.8503  [12.8s]
+Epoch 09/10  train loss=0.3112  acc=0.8702  |  test  loss=0.3540  acc=0.8597  [12.7s]
+Epoch 10/10  train loss=0.2972  acc=0.8771  |  test  loss=0.3858  acc=0.8614  [12.8s]
+
+Best test accuracy: 0.8614
+=== Cell 8 ===
+<Figure size 1200x400 with 2 Axes>
+[image saved: img_cell8_0.png]
+=== Cell 9 ===
+
+--- Uni-LSTM (last) ---
+Epoch 01/7  train loss=0.6711  acc=0.5718  |  test  loss=0.5958  acc=0.6816  [7.8s]
+Epoch 02/7  train loss=0.6098  acc=0.6779  |  test  loss=0.6094  acc=0.6946  [7.0s]
+Epoch 03/7  train loss=0.5314  acc=0.7458  |  test  loss=0.4699  acc=0.7956  [6.9s]
+Epoch 04/7  train loss=0.4497  acc=0.8008  |  test  loss=0.4763  acc=0.7952  [6.9s]
+Epoch 05/7  train loss=0.4037  acc=0.8269  |  test  loss=0.5337  acc=0.7571  [7.0s]
+Epoch 06/7  train loss=0.3750  acc=0.8382  |  test  loss=0.4290  acc=0.8174  [7.0s]
+Epoch 07/7  train loss=0.3353  acc=0.8592  |  test  loss=0.4301  acc=0.8269  [6.9s]
+Best test acc: 0.8269
+
+--- Bi-LSTM (last) ---
+Epoch 01/7  train loss=0.6539  acc=0.6044  |  test  loss=0.5724  acc=0.7043  [13.0s]
+Epoch 02/7  train loss=0.5913  acc=0.6861  |  test  loss=0.6305  acc=0.6895  [14.1s]
+Epoch 03/7  train loss=0.5286  acc=0.7410  |  test  loss=0.5992  acc=0.6898  [13.0s]
+Epoch 04/7  train loss=0.4591  acc=0.7913  |  test  loss=0.4374  acc=0.8056  [13.1s]
+Epoch 05/7  train loss=0.4139  acc=0.8162  |  test  loss=0.4815  acc=0.7967  [12.8s]
+Epoch 06/7  train loss=0.3858  acc=0.8312  |  test  loss=0.5219  acc=0.8104  [12.8s]
+Epoch 07/7  train loss=0.3485  acc=0.8480  |  test  loss=0.3621  acc=0.8468  [12.8s]
+Best test acc: 0.8468
+
+--- Bi-LSTM (mean) ---
+Epoch 01/7  train loss=0.5805  acc=0.6865  |  test  loss=0.4366  acc=0.7982  [20.5s]
+Epoch 02/7  train loss=0.4503  acc=0.7916  |  test  loss=0.3977  acc=0.8196  [20.6s]
+Epoch 03/7  train loss=0.3873  acc=0.8282  |  test  loss=0.3512  acc=0.8442  [21.4s]
+Epoch 04/7  train loss=0.3373  acc=0.8576  |  test  loss=0.3383  acc=0.8573  [20.5s]
+Epoch 05/7  train loss=0.3202  acc=0.8643  |  test  loss=0.3088  acc=0.8689  [20.6s]
+Epoch 06/7  train loss=0.2989  acc=0.8757  |  test  loss=0.3221  acc=0.8619  [20.8s]
+Epoch 07/7  train loss=0.2777  acc=0.8844  |  test  loss=0.3306  acc=0.8617  [20.9s]
+Best test acc: 0.8689
+
+--- Bi-LSTM-3L (mean) ---
+Epoch 01/7  train loss=0.5872  acc=0.6803  |  test  loss=0.4636  acc=0.7914  [27.5s]
+Epoch 02/7  train loss=0.4575  acc=0.7855  |  test  loss=0.4016  acc=0.8220  [27.7s]
+Epoch 03/7  train loss=0.3916  acc=0.8242  |  test  loss=0.3556  acc=0.8476  [27.3s]
+Epoch 04/7  train loss=0.3420  acc=0.8528  |  test  loss=0.3354  acc=0.8565  [27.5s]
+Epoch 05/7  train loss=0.3213  acc=0.8598  |  test  loss=0.3327  acc=0.8638  [27.4s]
+Epoch 06/7  train loss=0.3100  acc=0.8690  |  test  loss=0.3146  acc=0.8655  [27.5s]
+Epoch 07/7  train loss=0.2824  acc=0.8813  |  test  loss=0.3276  acc=0.8673  [27.5s]
+Best test acc: 0.8673
+=== Cell 10 ===
+Config                  Best Test Acc
+--------------------------------------
+Uni-LSTM (last)                0.8269
+Bi-LSTM (last)                 0.8468
+Bi-LSTM (mean)                 0.8689
+Bi-LSTM-3L (mean)              0.8673
+<Figure size 900x500 with 1 Axes>
+[image saved: img_cell10_1.png]
+=== Cell 11 ===
+Negative    Precision=0.8805  Recall=0.8362  F1=0.8578
+Positive    Precision=0.8441  Recall=0.8865  F1=0.8648
+
+Overall Accuracy: 0.8614
+=== Cell 12 ===
+<Figure size 500x400 with 2 Axes>
+[image saved: img_cell12_2.png]
+=== Cell 13 ===
+Review                                                                 Sentiment    Confidence
+-------------------------------------------------------------------------------------------------
+This movie was absolutely fantastic! The acting was superb and the p   positive     0.9122
+Terrible film. Boring, predictable, and a complete waste of time. I    negative     0.9937
+It was okay, nothing special. Some scenes were good but overall it f   negative     0.8996
+One of the best movies I've seen in years. A masterpiece of storytel   positive     0.9958
+The movie started slow but the ending completely redeemed it — absol   negative     0.6507
+Despite the great cast, the script was dull and the pacing was painf   negative     0.8877

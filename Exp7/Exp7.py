@@ -1,16 +1,3 @@
-# %% [markdown]
-# # Sentiment Analysis with RNN on IMDB Dataset
-# 
-# This notebook implements a Recurrent Neural Network (RNN) for binary sentiment classification (positive/negative) on the IMDB movie reviews dataset.
-# 
-# **Key concepts covered:**
-# - Text preprocessing & vocabulary building
-# - Trainable word embeddings
-# - Vanilla RNN for sequence classification
-# - Packed padded sequences for variable-length inputs
-# - Ablation: Vanilla RNN vs LSTM vs GRU
-
-# %%
 import re
 import time
 import random
@@ -31,37 +18,26 @@ torch.manual_seed(SEED)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
-# %% [markdown]
-# ## 1) Load IMDB Dataset
-# 
-# We use the `datasets` library (HuggingFace) to load IMDB. Install if needed:
-# ```bash
-# pip install datasets
-# ```
 
-# %%
 from datasets import load_dataset
 
 raw = load_dataset("imdb")
 print(raw)
 print("\nSample review:")
 print(raw["train"][0]["text"][:300])
-print("\nLabel:", raw["train"][0]["label"])  # 0=neg, 1=pos
+print("\nLabel:", raw["train"][0]["label"])
 
-# %% [markdown]
-# ## 2) Text Preprocessing & Vocabulary
 
-# %%
 def tokenize(text: str):
     """Simple whitespace + punctuation tokenizer."""
     text = text.lower()
-    text = re.sub(r"<[^>]+>", " ", text)         # strip HTML tags
-    text = re.sub(r"[^a-z0-9']", " ", text)       # keep letters/digits/apostrophe
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"[^a-z0-9']", " ", text)
     return text.split()
 
 MAX_VOCAB = 20_000
 MIN_FREQ  = 2
-MAX_LEN   = 256      # truncate to keep sequences manageable for RNN
+MAX_LEN   = 256
 
 print("Building vocabulary...")
 counter = Counter()
@@ -78,16 +54,10 @@ UNK_IDX = stoi["<unk>"]
 print(f"Vocabulary size: {len(vocab):,}")
 print("Most common:", counter.most_common(10))
 
-# %% [markdown]
-# ## 3) Dataset & DataLoader
-# 
-# We store sequence lengths alongside the encoded tokens so that the RNN can use **packed padded sequences** — this skips computation on padding positions and is more efficient than processing the full padded batch.
 
-# %%
 def encode(text: str, max_len: int = MAX_LEN):
     tokens = tokenize(text)[:max_len]
     return [stoi.get(t, UNK_IDX) for t in tokens]
-
 
 class IMDBDataset(Dataset):
     def __init__(self, split):
@@ -106,13 +76,11 @@ class IMDBDataset(Dataset):
             torch.tensor(label, dtype=torch.long),
         )
 
-
 def collate_fn(batch):
     texts, labels = zip(*batch)
     lengths = torch.tensor([len(t) for t in texts], dtype=torch.long)
     texts_padded = pad_sequence(texts, batch_first=True, padding_value=PAD_IDX)
     return texts_padded, torch.stack(labels), lengths
-
 
 BATCH_SIZE = 64
 
@@ -126,19 +94,7 @@ print(f"Train batches: {len(train_dl)} | Test batches: {len(test_dl)}")
 x_s, y_s, l_s = next(iter(train_dl))
 print("Batch shape:", x_s.shape, "| Labels:", y_s[:8], "| Lengths:", l_s[:8])
 
-# %% [markdown]
-# ## 4) RNN Model
-# 
-# Architecture:
-# ```
-# Embedding  →  PackedPadded RNN  →  Last Hidden State  →  Dropout  →  FC(hidden→2)
-# ```
-# 
-# The `cell_type` parameter lets us swap between `RNN`, `LSTM`, and `GRU` cleanly so we can compare all three in the ablation section.
-# 
-# For `LSTM`, the hidden state is a tuple `(h, c)`; we use only `h[-1]` (last layer's hidden state) as the sentence representation.
 
-# %%
 class SentimentRNN(nn.Module):
     """
     RNN-based sentiment classifier.
@@ -190,29 +146,25 @@ class SentimentRNN(nn.Module):
         self.fc      = nn.Linear(hidden_size * self.num_dirs, num_classes)
 
     def forward(self, x, lengths):
-        # x: (B, L)  lengths: (B,)
-        embedded = self.dropout(self.embedding(x))  # (B, L, E)
+        embedded = self.dropout(self.embedding(x))
 
-        # Pack to skip PAD positions
         packed = pack_padded_sequence(
             embedded, lengths.cpu(), batch_first=True, enforce_sorted=False
         )
 
         if self.cell_type == "LSTM":
-            _, (hidden, _) = self.rnn(packed)   # hidden: (num_layers*dirs, B, H)
+            _, (hidden, _) = self.rnn(packed)
         else:
-            _, hidden = self.rnn(packed)         # hidden: (num_layers*dirs, B, H)
+            _, hidden = self.rnn(packed)
 
-        # Concat last-layer forward (and backward if bidirectional)
         if self.bidirectional:
             last = torch.cat(
-                [hidden[-2], hidden[-1]], dim=1   # (B, 2H)
+                [hidden[-2], hidden[-1]], dim=1
             )
         else:
-            last = hidden[-1]                     # (B, H)
+            last = hidden[-1]
 
-        return self.fc(self.dropout(last))        # (B, num_classes)
-
+        return self.fc(self.dropout(last))
 
 model = SentimentRNN(
     vocab_size   = len(vocab),
@@ -230,10 +182,7 @@ print(model)
 total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 print(f"\nTrainable parameters: {total_params:,}")
 
-# %% [markdown]
-# ## 5) Training & Evaluation Utilities
 
-# %%
 def train_epoch(model, loader, optimizer, loss_fn):
     model.train()
     total_loss, correct, total = 0.0, 0, 0
@@ -252,7 +201,6 @@ def train_epoch(model, loader, optimizer, loss_fn):
 
     return total_loss / total, correct / total
 
-
 @torch.no_grad()
 def evaluate(model, loader, loss_fn):
     model.eval()
@@ -267,7 +215,6 @@ def evaluate(model, loader, loss_fn):
         total      += y.size(0)
 
     return total_loss / total, correct / total
-
 
 def train(
     model, train_loader, test_loader,
@@ -299,10 +246,7 @@ def train(
 
     return history
 
-# %% [markdown]
-# ## 6) Train the Model
 
-# %%
 history = train(
     model, train_dl, test_dl,
     epochs=10,
@@ -312,10 +256,7 @@ history = train(
 
 print(f"\nBest test accuracy: {max(history['test_acc']):.4f}")
 
-# %% [markdown]
-# ## 7) Plot Training Curves
 
-# %%
 import matplotlib.pyplot as plt
 
 epochs_range = range(1, len(history["train_loss"]) + 1)
@@ -341,12 +282,7 @@ fig.suptitle("Vanilla RNN on IMDB — Training Curves", fontsize=13)
 plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ## 8) Ablation: RNN vs LSTM vs GRU
-# 
-# Compare all three recurrent cell types under identical hyper-parameters to highlight how gating mechanisms (LSTM/GRU) help overcome the vanishing-gradient problem of vanilla RNNs on long sequences.
 
-# %%
 configs = [
     {"cell_type": "RNN",  "bidirectional": False, "label": "Vanilla RNN"},
     {"cell_type": "GRU",  "bidirectional": False, "label": "GRU"},
@@ -375,14 +311,12 @@ for cfg in configs:
     results.append({"label": cfg["label"], "best_test_acc": best_acc, "history": h})
     print(f"Best test acc: {best_acc:.4f}")
 
-# %%
-# Summary table
+
 print(f"{'Config':<15} {'Best Test Acc':>15}")
 print("-" * 32)
 for r in results:
     print(f"{r['label']:<15} {r['best_test_acc']:>15.4f}")
 
-# Plot accuracy curves for all configs
 plt.figure(figsize=(9, 5))
 for r in results:
     plt.plot(range(1, ABLATION_EPOCHS + 1), r["history"]["test_acc"], marker="o", label=r["label"])
@@ -393,23 +327,19 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ## 9) Inference on Custom Reviews
 
-# %%
 @torch.no_grad()
 def predict(text: str, m=model):
     m.eval()
     ids = encode(text)
     if not ids:
         return "unknown", 0.0
-    x       = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)  # (1, L)
+    x       = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)
     lengths = torch.tensor([len(ids)], dtype=torch.long)
     logits  = m(x, lengths)
     probs   = F.softmax(logits, dim=1)[0]
     label   = int(logits.argmax(1).item())
     return ("positive" if label == 1 else "negative"), float(probs[label])
-
 
 test_reviews = [
     "This movie was absolutely fantastic! The acting was superb and the plot kept me on the edge of my seat.",
@@ -423,23 +353,3 @@ print("-" * 95)
 for review in test_reviews:
     sentiment, confidence = predict(review)
     print(f"{review[:68]:<70} {sentiment:<12} {confidence:.4f}")
-
-# %% [markdown]
-# ## Summary
-# 
-# | Component | Detail |
-# |---|---|
-# | Dataset | IMDB (25k train / 25k test) |
-# | Vocabulary | Top 20,000 words, min freq=2 |
-# | Max sequence length | 256 tokens |
-# | Embedding | 128-dim trainable |
-# | RNN cell | Vanilla RNN (2 layers × 128 hidden) |
-# | Sequence handling | Packed padded sequences |
-# | Dropout | 0.5 between layers and before FC |
-# | Gradient clipping | max_norm=1.0 |
-# | Optimizer | Adam (lr=1e-3, StepLR decay) |
-# 
-# **Vanilla RNN vs LSTM vs GRU:**  
-# Vanilla RNNs suffer from the **vanishing gradient** problem — gradients shrink exponentially as they backpropagate through many time steps, preventing the model from learning long-range dependencies. **LSTM** solves this with three gates (input, forget, output) and a separate cell state that allows gradients to flow unchanged. **GRU** simplifies this to two gates (reset, update) with similar performance but fewer parameters. On IMDB, where sentiment clues can appear anywhere in a 256-token review, gated cells (LSTM/GRU) significantly outperform the vanilla RNN.
-
-

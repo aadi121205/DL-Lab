@@ -1,0 +1,88 @@
+=== Cell 1 ===
+Device: cuda
+=== Cell 2 ===
+[*********************100%***********************]  1 of 1 completed
+Downloaded 1509 trading days (2018-01-01 → 2023-12-31)
+Price           Close
+Ticker           AAPL
+Date                 
+2018-01-02  40.304165
+2018-01-03  40.297153
+2018-01-04  40.484333
+2018-01-05  40.945263
+2018-01-08  40.793179
+
+<Figure size 1200x400 with 1 Axes>
+[image saved: img_cell2_0.png]
+=== Cell 3 ===
+Train samples: 1207  |  Test samples: 302
+Price range (train): 33.77 – 178.10
+X_train: (1147, 60, 1)  y_train: (1147, 1)
+X_test:  (302, 60, 1)   y_test:  (302, 1)
+=== Cell 4 ===
+Train batches: 36  |  Test batches: 10
+Batch X shape: torch.Size([32, 60, 1])   Batch y shape: torch.Size([32, 1])
+=== Cell 5 ===
+StockLSTM(
+  (lstm): LSTM(1, 64, num_layers=2, batch_first=True, dropout=0.2)
+  (dropout): Dropout(p=0.2, inplace=False)
+  (fc): Linear(in_features=64, out_features=1, bias=True)
+)
+
+Trainable parameters: 50,497
+=== Cell 7 ===
+Epoch 001/50  train MSE=0.133617  |  test  MSE=0.067053  RMSE=$37.38  MAE=$35.31  [0.3s]
+Epoch 010/50  train MSE=0.003463  |  test  MSE=0.003071  RMSE=$8.00  MAE=$7.00  [0.1s]
+Epoch 020/50  train MSE=0.002635  |  test  MSE=0.001392  RMSE=$5.39  MAE=$4.55  [0.1s]
+Epoch 030/50  train MSE=0.002246  |  test  MSE=0.002476  RMSE=$7.18  MAE=$6.32  [0.1s]
+Epoch 040/50  train MSE=0.002005  |  test  MSE=0.001258  RMSE=$5.12  MAE=$4.36  [0.1s]
+Epoch 050/50  train MSE=0.001990  |  test  MSE=0.001713  RMSE=$5.97  MAE=$5.18  [0.1s]
+
+Best RMSE: $4.57  (epoch 27)
+Best MAE:  $3.50  (epoch 27)
+=== Cell 8 ===
+<Figure size 1500x400 with 3 Axes>
+[image saved: img_cell8_1.png]
+=== Cell 9 ===
+<Figure size 1300x500 with 1 Axes>
+[image saved: img_cell9_2.png]
+Final Test RMSE: $5.97
+Final Test MAE:  $5.18
+=== Cell 10 ===
+
+--- hidden=32, layers=1 ---
+Epoch 001/30  train MSE=0.152888  |  test  MSE=0.067601  RMSE=$37.53  MAE=$34.65  [0.1s]
+Epoch 010/30  train MSE=0.004558  |  test  MSE=0.003817  RMSE=$8.92  MAE=$7.64  [0.0s]
+Epoch 020/30  train MSE=0.003712  |  test  MSE=0.001359  RMSE=$5.32  MAE=$4.30  [0.0s]
+Epoch 030/30  train MSE=0.002878  |  test  MSE=0.002087  RMSE=$6.59  MAE=$5.71  [0.0s]
+RMSE=$6.59  MAE=$5.71
+
+--- hidden=64, layers=1 ---
+Epoch 001/30  train MSE=0.126012  |  test  MSE=0.141342  RMSE=$54.26  MAE=$52.58  [0.0s]
+Epoch 010/30  train MSE=0.002604  |  test  MSE=0.001267  RMSE=$5.14  MAE=$4.37  [0.0s]
+Epoch 020/30  train MSE=0.002090  |  test  MSE=0.002352  RMSE=$7.00  MAE=$6.16  [0.1s]
+Epoch 030/30  train MSE=0.001944  |  test  MSE=0.002157  RMSE=$6.70  MAE=$5.91  [0.1s]
+RMSE=$6.70  MAE=$5.91
+
+--- hidden=64, layers=2 ---
+Epoch 001/30  train MSE=0.099519  |  test  MSE=0.002969  RMSE=$7.87  MAE=$6.86  [0.1s]
+Epoch 010/30  train MSE=0.002867  |  test  MSE=0.001198  RMSE=$5.00  MAE=$4.09  [0.1s]
+Epoch 020/30  train MSE=0.002976  |  test  MSE=0.001103  RMSE=$4.79  MAE=$3.75  [0.1s]
+Epoch 030/30  train MSE=0.002224  |  test  MSE=0.001718  RMSE=$5.98  MAE=$5.11  [0.1s]
+RMSE=$5.98  MAE=$5.11
+
+--- hidden=128, layers=2 ---
+Epoch 001/30  train MSE=0.074907  |  test  MSE=0.016316  RMSE=$18.44  MAE=$15.68  [0.1s]
+Epoch 010/30  train MSE=0.001667  |  test  MSE=0.001129  RMSE=$4.85  MAE=$4.12  [0.1s]
+Epoch 020/30  train MSE=0.001571  |  test  MSE=0.001998  RMSE=$6.45  MAE=$5.66  [0.1s]
+Epoch 030/30  train MSE=0.001376  |  test  MSE=0.001459  RMSE=$5.51  MAE=$4.77  [0.1s]
+RMSE=$5.51  MAE=$4.77
+=== Cell 11 ===
+Config                      RMSE ($)    MAE ($)
+------------------------------------------------
+hidden=32, layers=1             6.59       5.71
+hidden=64, layers=1             6.70       5.91
+hidden=64, layers=2             5.98       5.11
+hidden=128, layers=2            5.51       4.77
+<Figure size 900x500 with 1 Axes>
+[image saved: img_cell11_3.png]

@@ -1,16 +1,3 @@
-# %% [markdown]
-# # Text Classification with 1-D CNN on IMDB Dataset
-# 
-# This notebook implements a 1-D Convolutional Neural Network for sentiment classification (positive/negative) on the IMDB movie reviews dataset.
-# 
-# **Key concepts covered:**
-# - Text preprocessing & vocabulary building
-# - Trainable word embeddings
-# - 1-D CNN with multiple filter sizes (n-gram features)
-# - Global max-pooling over time
-# - Binary sentiment classification
-
-# %%
 import re
 import time
 import random
@@ -31,38 +18,26 @@ torch.manual_seed(SEED)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
-# %% [markdown]
-# ## 1) Load IMDB Dataset
-# 
-# We use the `datasets` library (HuggingFace) to load IMDB. Install if needed:
-# ```bash
-# pip install datasets
-# ```
 
-# %%
 from datasets import load_dataset
 
 raw = load_dataset("imdb")
 print(raw)
 print("\nSample review:")
 print(raw["train"][0]["text"][:300])
-print("\nLabel:", raw["train"][0]["label"])  # 0=neg, 1=pos
+print("\nLabel:", raw["train"][0]["label"])
 
-# %% [markdown]
-# ## 2) Text Preprocessing & Vocabulary
 
-# %%
 def tokenize(text: str):
     """Simple whitespace + punctuation tokenizer."""
     text = text.lower()
-    text = re.sub(r"<[^>]+>", " ", text)          # strip HTML tags
-    text = re.sub(r"[^a-z0-9']", " ", text)        # keep letters/digits/apostrophe
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"[^a-z0-9']", " ", text)
     return text.split()
 
-# Build vocabulary from training set
-MAX_VOCAB  = 20_000   # keep top-N words
-MIN_FREQ   = 2        # discard rare words
-MAX_LEN    = 512      # truncate reviews to this many tokens
+MAX_VOCAB  = 20_000
+MIN_FREQ   = 2
+MAX_LEN    = 512
 
 print("Building vocabulary...")
 counter = Counter()
@@ -80,14 +55,10 @@ UNK_IDX = stoi["<unk>"]
 print(f"Vocabulary size: {len(vocab):,}")
 print("Most common:", counter.most_common(10))
 
-# %% [markdown]
-# ## 3) Dataset & DataLoader
 
-# %%
 def encode(text: str, max_len: int = MAX_LEN):
     tokens = tokenize(text)[:max_len]
     return [stoi.get(t, UNK_IDX) for t in tokens]
-
 
 class IMDBDataset(Dataset):
     def __init__(self, split):
@@ -103,12 +74,10 @@ class IMDBDataset(Dataset):
         ids, label = self.data[idx]
         return torch.tensor(ids, dtype=torch.long), torch.tensor(label, dtype=torch.long)
 
-
 def collate_fn(batch):
     texts, labels = zip(*batch)
     texts_padded = pad_sequence(texts, batch_first=True, padding_value=PAD_IDX)
     return texts_padded, torch.stack(labels)
-
 
 BATCH_SIZE = 64
 
@@ -122,17 +91,7 @@ print(f"Train batches: {len(train_dl)} | Test batches: {len(test_dl)}")
 x_sample, y_sample = next(iter(train_dl))
 print("Batch shape:", x_sample.shape, "| Labels:", y_sample[:8])
 
-# %% [markdown]
-# ## 4) 1-D CNN Model
-# 
-# Architecture:
-# ```
-# Embedding  →  [Conv1d(k=2), Conv1d(k=3), Conv1d(k=4)]  →  GlobalMaxPool  →  Concat  →  Dropout  →  FC
-# ```
-# 
-# Using **multiple filter sizes** mimics n-gram detectors. Each Conv1d operates across the sequence dimension, extracting local features of different window sizes.
 
-# %%
 class TextCNN(nn.Module):
     """
     1-D CNN for text classification.
@@ -161,9 +120,6 @@ class TextCNN(nn.Module):
 
         self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=pad_idx)
 
-        # One Conv1d per kernel size
-        # Input channels = embed_dim, Output channels = num_filters
-        # Conv1d expects (B, C_in, L) -> we treat embed_dim as channels
         self.convs = nn.ModuleList([
             nn.Conv1d(in_channels=embed_dim,
                       out_channels=num_filters,
@@ -175,21 +131,18 @@ class TextCNN(nn.Module):
         self.fc = nn.Linear(num_filters * len(kernel_sizes), num_classes)
 
     def forward(self, x):
-        # x: (B, L)
-        embedded = self.embedding(x)        # (B, L, E)
-        embedded = embedded.permute(0, 2, 1)  # (B, E, L)  — Conv1d wants (B, C, L)
+        embedded = self.embedding(x)
+        embedded = embedded.permute(0, 2, 1)
 
-        # Apply each conv + ReLU + global max-pool
         pooled = []
         for conv in self.convs:
-            c = F.relu(conv(embedded))       # (B, num_filters, L - k + 1)
-            p = c.max(dim=2).values          # (B, num_filters)  — global max pool
+            c = F.relu(conv(embedded))
+            p = c.max(dim=2).values
             pooled.append(p)
 
-        cat = torch.cat(pooled, dim=1)       # (B, num_filters * len(kernel_sizes))
+        cat = torch.cat(pooled, dim=1)
         out = self.dropout(cat)
-        return self.fc(out)                  # (B, num_classes)
-
+        return self.fc(out)
 
 model = TextCNN(
     vocab_size=len(vocab),
@@ -205,10 +158,7 @@ print(model)
 total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 print(f"\nTrainable parameters: {total_params:,}")
 
-# %% [markdown]
-# ## 5) Training & Evaluation Utilities
 
-# %%
 def train_epoch(model, loader, optimizer, loss_fn):
     model.train()
     total_loss, correct, total = 0.0, 0, 0
@@ -226,7 +176,6 @@ def train_epoch(model, loader, optimizer, loss_fn):
 
     return total_loss / total, correct / total
 
-
 @torch.no_grad()
 def evaluate(model, loader, loss_fn):
     model.eval()
@@ -241,7 +190,6 @@ def evaluate(model, loader, loss_fn):
         total      += y.size(0)
 
     return total_loss / total, correct / total
-
 
 def train(
     model, train_loader, test_loader,
@@ -273,10 +221,7 @@ def train(
 
     return history
 
-# %% [markdown]
-# ## 6) Train the Model
 
-# %%
 history = train(
     model, train_dl, test_dl,
     epochs=10,
@@ -286,10 +231,7 @@ history = train(
 
 print(f"\nBest test accuracy: {max(history['test_acc']):.4f}")
 
-# %% [markdown]
-# ## 7) Plot Training Curves
 
-# %%
 import matplotlib.pyplot as plt
 
 epochs_range = range(1, len(history["train_loss"]) + 1)
@@ -315,12 +257,7 @@ fig.suptitle("1-D CNN on IMDB — Training Curves", fontsize=13)
 plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ## 8) Ablation: Effect of Kernel Sizes & Filter Count
-# 
-# Compare different kernel size combinations and filter counts to understand their impact on accuracy.
 
-# %%
 configs = [
     {"kernel_sizes": [3],       "num_filters": 100, "label": "k=[3], f=100"},
     {"kernel_sizes": [2, 3, 4], "num_filters": 100, "label": "k=[2,3,4], f=100"},
@@ -347,14 +284,12 @@ for cfg in configs:
     results.append({"label": cfg["label"], "best_test_acc": best_acc, "history": h})
     print(f"Best test acc: {best_acc:.4f}")
 
-# %%
-# Summary table
+
 print(f"{'Config':<25} {'Best Test Acc':>15}")
 print("-" * 42)
 for r in results:
     print(f"{r['label']:<25} {r['best_test_acc']:>15.4f}")
 
-# Plot accuracy curves for all configs
 plt.figure(figsize=(9, 5))
 for r in results:
     plt.plot(range(1, ABLATION_EPOCHS + 1), r["history"]["test_acc"], marker="o", label=r["label"])
@@ -365,22 +300,18 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ## 9) Inference on Custom Reviews
 
-# %%
 @torch.no_grad()
 def predict(text: str, model=model):
     model.eval()
     ids = encode(text)
     if not ids:
         return "unknown", 0.0
-    x = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)  # (1, L)
+    x = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)
     logits = model(x)
     probs  = F.softmax(logits, dim=1)[0]
     label  = int(logits.argmax(1).item())
     return ("positive" if label == 1 else "negative"), float(probs[label])
-
 
 test_reviews = [
     "This movie was absolutely fantastic! The acting was superb and the plot kept me on the edge of my seat.",
@@ -394,23 +325,3 @@ print("-" * 95)
 for review in test_reviews:
     sentiment, confidence = predict(review)
     print(f"{review[:68]:<70} {sentiment:<12} {confidence:.4f}")
-
-# %% [markdown]
-# ## Summary
-# 
-# | Component | Detail |
-# |---|---|
-# | Dataset | IMDB (25k train / 25k test) |
-# | Vocabulary | Top 20,000 words, min freq=2 |
-# | Embedding | 128-dim trainable |
-# | Conv filters | 100 per kernel size |
-# | Kernel sizes | [2, 3, 4] — bigram, trigram, 4-gram detectors |
-# | Pooling | Global max-pool over time |
-# | Dropout | 0.5 before FC layer |
-# | Optimizer | Adam (lr=1e-3, StepLR decay) |
-# | Typical test acc | ~88–90% |
-# 
-# **Why 1-D CNN works for text:**  
-# Each Conv1d filter slides over consecutive word embeddings and acts as an **n-gram detector**. Global max-pooling keeps the strongest activation regardless of position, making the model invariant to where the key phrase appears in the review.
-
-

@@ -1,0 +1,74 @@
+=== Cell 7 ===
+[mlp_1x128_relu] Epoch 01/10 | train loss 0.5159, acc 0.8640 | val loss 0.3328, acc 0.9041
+[mlp_1x128_relu] Epoch 02/10 | train loss 0.2813, acc 0.9204 | val loss 0.2756, acc 0.9175
+[mlp_1x128_relu] Epoch 03/10 | train loss 0.2297, acc 0.9341 | val loss 0.2313, acc 0.9326
+[mlp_1x128_relu] Epoch 04/10 | train loss 0.1960, acc 0.9439 | val loss 0.2041, acc 0.9387
+[mlp_1x128_relu] Epoch 05/10 | train loss 0.1711, acc 0.9512 | val loss 0.1820, acc 0.9458
+[mlp_1x128_relu] Epoch 06/10 | train loss 0.1513, acc 0.9575 | val loss 0.1645, acc 0.9531
+[mlp_1x128_relu] Epoch 07/10 | train loss 0.1350, acc 0.9625 | val loss 0.1549, acc 0.9567
+[mlp_1x128_relu] Epoch 08/10 | train loss 0.1219, acc 0.9666 | val loss 0.1435, acc 0.9561
+[mlp_1x128_relu] Epoch 09/10 | train loss 0.1114, acc 0.9694 | val loss 0.1361, acc 0.9612
+[mlp_1x128_relu] Epoch 10/10 | train loss 0.1025, acc 0.9714 | val loss 0.1286, acc 0.9634
+[mlp_1x256_relu] Epoch 01/10 | train loss 0.4990, acc 0.8704 | val loss 0.3234, acc 0.9086
+[mlp_1x256_relu] Epoch 02/10 | train loss 0.2697, acc 0.9245 | val loss 0.2585, acc 0.9242
+[mlp_1x256_relu] Epoch 03/10 | train loss 0.2197, acc 0.9387 | val loss 0.2163, acc 0.9383
+[mlp_1x256_relu] Epoch 04/10 | train loss 0.1862, acc 0.9486 | val loss 0.1909, acc 0.9462
+[mlp_1x256_relu] Epoch 05/10 | train loss 0.1614, acc 0.9547 | val loss 0.1730, acc 0.9482
+[mlp_1x256_relu] Epoch 06/10 | train loss 0.1424, acc 0.9602 | val loss 0.1583, acc 0.9547
+[mlp_1x256_relu] Epoch 07/10 | train loss 0.1270, acc 0.9645 | val loss 0.1487, acc 0.9545
+[mlp_1x256_relu] Epoch 08/10 | train loss 0.1152, acc 0.9679 | val loss 0.1371, acc 0.9608
+[mlp_1x256_relu] Epoch 09/10 | train loss 0.1044, acc 0.9711 | val loss 0.1265, acc 0.9632
+[mlp_1x256_relu] Epoch 10/10 | train loss 0.0960, acc 0.9730 | val loss 0.1238, acc 0.9636
+[mlp_1x256_tanh] Epoch 01/10 | train loss 0.4948, acc 0.8705 | val loss 0.3472, acc 0.9017
+[mlp_1x256_tanh] Epoch 02/10 | train loss 0.3071, acc 0.9126 | val loss 0.3071, acc 0.9092
+[mlp_1x256_tanh] Epoch 03/10 | train loss 0.2725, acc 0.9226 | val loss 0.2814, acc 0.9179
+[mlp_1x256_tanh] Epoch 04/10 | train loss 0.2460, acc 0.9299 | val loss 0.2558, acc 0.9229
+[mlp_1x256_tanh] Epoch 05/10 | train loss 0.2218, acc 0.9375 | val loss 0.2305, acc 0.9318
+[mlp_1x256_tanh] Epoch 06/10 | train loss 0.2001, acc 0.9431 | val loss 0.2135, acc 0.9355
+[mlp_1x256_tanh] Epoch 07/10 | train loss 0.1817, acc 0.9491 | val loss 0.2031, acc 0.9389
+[mlp_1x256_tanh] Epoch 08/10 | train loss 0.1657, acc 0.9534 | val loss 0.1823, acc 0.9456
+[mlp_1x256_tanh] Epoch 09/10 | train loss 0.1518, acc 0.9570 | val loss 0.1740, acc 0.9484
+[mlp_1x256_tanh] Epoch 10/10 | train loss 0.1403, acc 0.9604 | val loss 0.1620, acc 0.9525
+[mlp_2x256_128_relu] Epoch 01/12 | train loss 0.4416, acc 0.8788 | val loss 0.2578, acc 0.9254
+[mlp_2x256_128_relu] Epoch 02/12 | train loss 0.2062, acc 0.9401 | val loss 0.1935, acc 0.9422
+[mlp_2x256_128_relu] Epoch 03/12 | train loss 0.1525, acc 0.9562 | val loss 0.1593, acc 0.9567
+[mlp_2x256_128_relu] Epoch 04/12 | train loss 0.1211, acc 0.9655 | val loss 0.1491, acc 0.9575
+[mlp_2x256_128_relu] Epoch 05/12 | train loss 0.1000, acc 0.9710 | val loss 0.1209, acc 0.9628
+[mlp_2x256_128_relu] Epoch 06/12 | train loss 0.0849, acc 0.9753 | val loss 0.1149, acc 0.9680
+[mlp_2x256_128_relu] Epoch 07/12 | train loss 0.0725, acc 0.9791 | val loss 0.1030, acc 0.9682
+[mlp_2x256_128_relu] Epoch 08/12 | train loss 0.0630, acc 0.9818 | val loss 0.1006, acc 0.9707
+[mlp_2x256_128_relu] Epoch 09/12 | train loss 0.0555, acc 0.9835 | val loss 0.0971, acc 0.9711
+[mlp_2x256_128_relu] Epoch 10/12 | train loss 0.0485, acc 0.9857 | val loss 0.0946, acc 0.9705
+[mlp_2x256_128_relu] Epoch 11/12 | train loss 0.0423, acc 0.9878 | val loss 0.0913, acc 0.9731
+[mlp_2x256_128_relu] Epoch 12/12 | train loss 0.0375, acc 0.9896 | val loss 0.0803, acc 0.9745
+[mlp_2x256_128_sigmoid] Epoch 01/12 | train loss 2.0310, acc 0.3932 | val loss 1.4096, acc 0.6665
+[mlp_2x256_128_sigmoid] Epoch 02/12 | train loss 0.9161, acc 0.7777 | val loss 0.6508, acc 0.8311
+[mlp_2x256_128_sigmoid] Epoch 03/12 | train loss 0.5411, acc 0.8539 | val loss 0.4815, acc 0.8617
+[mlp_2x256_128_sigmoid] Epoch 04/12 | train loss 0.4324, acc 0.8795 | val loss 0.4164, acc 0.8790
+[mlp_2x256_128_sigmoid] Epoch 05/12 | train loss 0.3833, acc 0.8917 | val loss 0.3852, acc 0.8922
+[mlp_2x256_128_sigmoid] Epoch 06/12 | train loss 0.3544, acc 0.8990 | val loss 0.3659, acc 0.8942
+[mlp_2x256_128_sigmoid] Epoch 07/12 | train loss 0.3340, acc 0.9051 | val loss 0.3418, acc 0.9033
+[mlp_2x256_128_sigmoid] Epoch 08/12 | train loss 0.3186, acc 0.9087 | val loss 0.3299, acc 0.9061
+[mlp_2x256_128_sigmoid] Epoch 09/12 | train loss 0.3056, acc 0.9123 | val loss 0.3194, acc 0.9084
+[mlp_2x256_128_sigmoid] Epoch 10/12 | train loss 0.2942, acc 0.9159 | val loss 0.3157, acc 0.9084
+[mlp_2x256_128_sigmoid] Epoch 11/12 | train loss 0.2841, acc 0.9178 | val loss 0.3050, acc 0.9110
+[mlp_2x256_128_sigmoid] Epoch 12/12 | train loss 0.2754, acc 0.9204 | val loss 0.2944, acc 0.9150
+[mlp_2x256_128_relu_l2] Epoch 01/12 | train loss 0.4816, acc 0.8782 | val loss 0.3118, acc 0.9197
+[mlp_2x256_128_relu_l2] Epoch 02/12 | train loss 0.2471, acc 0.9402 | val loss 0.2687, acc 0.9288
+[mlp_2x256_128_relu_l2] Epoch 03/12 | train loss 0.1947, acc 0.9556 | val loss 0.1993, acc 0.9531
+[mlp_2x256_128_relu_l2] Epoch 04/12 | train loss 0.1646, acc 0.9646 | val loss 0.1936, acc 0.9539
+[mlp_2x256_128_relu_l2] Epoch 05/12 | train loss 0.1435, acc 0.9707 | val loss 0.2261, acc 0.9419
+[mlp_2x256_128_relu_l2] Epoch 06/12 | train loss 0.1289, acc 0.9748 | val loss 0.1569, acc 0.9674
+[mlp_2x256_128_relu_l2] Epoch 07/12 | train loss 0.1175, acc 0.9784 | val loss 0.1459, acc 0.9691
+[mlp_2x256_128_relu_l2] Epoch 08/12 | train loss 0.1076, acc 0.9814 | val loss 0.1457, acc 0.9695
+[mlp_2x256_128_relu_l2] Epoch 09/12 | train loss 0.1003, acc 0.9835 | val loss 0.1390, acc 0.9709
+[mlp_2x256_128_relu_l2] Epoch 10/12 | train loss 0.0935, acc 0.9857 | val loss 0.1400, acc 0.9695
+[mlp_2x256_128_relu_l2] Epoch 11/12 | train loss 0.0878, acc 0.9879 | val loss 0.1348, acc 0.9711
+[mlp_2x256_128_relu_l2] Epoch 12/12 | train loss 0.0831, acc 0.9893 | val loss 0.1295, acc 0.9737
+
+Saved experiment summary to: experiments_mnist_numpy/experiment_summary.csv
+Each experiment folder contains:
+  - config.json
+  - history.csv
+  - loss.png, accuracy.png
+  - final_results.json

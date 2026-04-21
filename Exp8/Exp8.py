@@ -1,20 +1,3 @@
-# %% [markdown]
-# # Sentiment Analysis with Bidirectional LSTM on IMDB Dataset
-# 
-# This notebook implements a **Bidirectional LSTM (Bi-LSTM)** for binary sentiment classification (positive/negative) on the IMDB movie reviews dataset.
-# 
-# **Key concepts covered:**
-# - Why bidirectionality helps: forward context + backward context
-# - Bi-LSTM architecture: concatenating forward and backward hidden states
-# - Packed padded sequences for variable-length inputs
-# - Comparison: Unidirectional LSTM vs Bidirectional LSTM
-# - Attention-weighted pooling as an alternative to last-hidden-state pooling
-# 
-# **Bidirectional LSTM intuition:**  
-# A standard LSTM reads tokens left→right, so at position `t` it only has context from tokens `1..t`.  
-# A Bi-LSTM runs two LSTMs — one forward (left→right) and one backward (right→left) — then **concatenates** their hidden states at each step, giving every token access to the full sentence context.
-
-# %%
 import re
 import time
 import random
@@ -35,32 +18,26 @@ torch.manual_seed(SEED)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
-# %% [markdown]
-# ## 1) Load IMDB Dataset
 
-# %%
 from datasets import load_dataset
 
 raw = load_dataset("imdb")
 print(raw)
 print("\nSample review:")
 print(raw["train"][0]["text"][:300])
-print("\nLabel:", raw["train"][0]["label"])  # 0=neg, 1=pos
+print("\nLabel:", raw["train"][0]["label"])
 
-# %% [markdown]
-# ## 2) Text Preprocessing & Vocabulary
 
-# %%
 def tokenize(text: str):
     """Simple whitespace + punctuation tokenizer."""
     text = text.lower()
-    text = re.sub(r"<[^>]+>", " ", text)         # strip HTML tags
-    text = re.sub(r"[^a-z0-9']", " ", text)       # keep letters/digits/apostrophe
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"[^a-z0-9']", " ", text)
     return text.split()
 
 MAX_VOCAB = 20_000
 MIN_FREQ  = 2
-MAX_LEN   = 256      # truncate to keep sequences manageable
+MAX_LEN   = 256
 
 print("Building vocabulary...")
 counter = Counter()
@@ -76,14 +53,10 @@ UNK_IDX = stoi["<unk>"]
 
 print(f"Vocabulary size: {len(vocab):,}")
 
-# %% [markdown]
-# ## 3) Dataset & DataLoader
 
-# %%
 def encode(text: str, max_len: int = MAX_LEN):
     tokens = tokenize(text)[:max_len]
     return [stoi.get(t, UNK_IDX) for t in tokens]
-
 
 class IMDBDataset(Dataset):
     def __init__(self, split):
@@ -102,13 +75,11 @@ class IMDBDataset(Dataset):
             torch.tensor(label, dtype=torch.long),
         )
 
-
 def collate_fn(batch):
     texts, labels = zip(*batch)
     lengths = torch.tensor([len(t) for t in texts], dtype=torch.long)
     texts_padded = pad_sequence(texts, batch_first=True, padding_value=PAD_IDX)
     return texts_padded, torch.stack(labels), lengths
-
 
 BATCH_SIZE = 64
 
@@ -122,27 +93,7 @@ print(f"Train batches: {len(train_dl)} | Test batches: {len(test_dl)}")
 x_s, y_s, l_s = next(iter(train_dl))
 print("Batch shape:", x_s.shape, "| Labels:", y_s[:8], "| Lengths:", l_s[:8])
 
-# %% [markdown]
-# ## 4) Bidirectional LSTM Architecture
-# 
-# ```
-# Input tokens:  [w1,  w2,  w3,  ...,  wT]
-#                 ↓    ↓    ↓          ↓
-# Embedding:     [e1,  e2,  e3,  ...,  eT]
-#                 ↓    ↓    ↓          ↓
-# Forward LSTM:  h→1  h→2  h→3  ...  h→T   (left-to-right)
-# Backward LSTM: h←1  h←2  h←3  ...  h←T   (right-to-left)
-#                 ↓                   ↓
-# Concat last:  [h→T || h←1]              → sentence vector (2H)
-#                 ↓
-# Dropout + FC → logits (2 classes)
-# ```
-# 
-# We implement **two pooling strategies** and compare them:
-# - **Last-hidden**: uses `h→T` (forward) and `h←1` (backward) — the final hidden states
-# - **Mean pooling**: averages all `[h→t || h←t]` across valid (non-padding) positions
 
-# %%
 class BiLSTMSentiment(nn.Module):
     """
     Bidirectional LSTM for sentiment classification.
@@ -183,39 +134,31 @@ class BiLSTMSentiment(nn.Module):
             num_layers    = num_layers,
             batch_first   = True,
             dropout       = dropout if num_layers > 1 else 0.0,
-            bidirectional = True,       # <-- key flag
+            bidirectional = True,
         )
         self.dropout = nn.Dropout(dropout)
-        # *2 because we concatenate forward + backward hidden states
         self.fc      = nn.Linear(hidden_size * 2, num_classes)
 
     def forward(self, x, lengths):
-        # x: (B, L)  lengths: (B,)
-        embedded = self.dropout(self.embedding(x))          # (B, L, E)
+        embedded = self.dropout(self.embedding(x))
 
         packed = pack_padded_sequence(
             embedded, lengths.cpu(), batch_first=True, enforce_sorted=False
         )
 
-        # output: packed  |  hidden: (num_layers*2, B, H)  |  cell: same
         packed_out, (hidden, cell) = self.lstm(packed)
 
         if self.pooling == "last":
-            # hidden[-2]: last forward layer   hidden[-1]: last backward layer
-            # Concat to form (B, 2H) sentence vector
-            sentence = torch.cat([hidden[-2], hidden[-1]], dim=1)  # (B, 2H)
+            sentence = torch.cat([hidden[-2], hidden[-1]], dim=1)
 
-        else:  # mean pooling over valid (non-pad) timesteps
-            output, _ = pad_packed_sequence(packed_out, batch_first=True)  # (B, L, 2H)
-            # Mask padding positions before averaging
-            mask = (x != 0).unsqueeze(-1).float()           # (B, L, 1)
+        else:
+            output, _ = pad_packed_sequence(packed_out, batch_first=True)
+            mask = (x != 0).unsqueeze(-1).float()
             output = output * mask
-            sentence = output.sum(dim=1) / lengths.unsqueeze(1).float().to(output.device)  # (B, 2H)
+            sentence = output.sum(dim=1) / lengths.unsqueeze(1).float().to(output.device)
 
-        return self.fc(self.dropout(sentence))               # (B, num_classes)
+        return self.fc(self.dropout(sentence))
 
-
-# Instantiate the Bi-LSTM model with last-hidden pooling
 model = BiLSTMSentiment(
     vocab_size  = len(vocab),
     embed_dim   = 128,
@@ -231,10 +174,7 @@ print(model)
 total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 print(f"\nTrainable parameters: {total_params:,}")
 
-# %% [markdown]
-# ## 5) Training & Evaluation Utilities
 
-# %%
 def train_epoch(model, loader, optimizer, loss_fn):
     model.train()
     total_loss, correct, total = 0.0, 0, 0
@@ -253,7 +193,6 @@ def train_epoch(model, loader, optimizer, loss_fn):
 
     return total_loss / total, correct / total
 
-
 @torch.no_grad()
 def evaluate(model, loader, loss_fn):
     model.eval()
@@ -268,7 +207,6 @@ def evaluate(model, loader, loss_fn):
         total      += y.size(0)
 
     return total_loss / total, correct / total
-
 
 def train_model(
     model, train_loader, test_loader,
@@ -300,10 +238,7 @@ def train_model(
 
     return history
 
-# %% [markdown]
-# ## 6) Train the Bi-LSTM Model
 
-# %%
 history = train_model(
     model, train_dl, test_dl,
     epochs=10,
@@ -313,10 +248,7 @@ history = train_model(
 
 print(f"\nBest test accuracy: {max(history['test_acc']):.4f}")
 
-# %% [markdown]
-# ## 7) Plot Training Curves
 
-# %%
 import matplotlib.pyplot as plt
 
 epochs_range = range(1, len(history["train_loss"]) + 1)
@@ -342,17 +274,7 @@ fig.suptitle("Bidirectional LSTM on IMDB — Training Curves", fontsize=13)
 plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ## 8) Ablation: Unidirectional LSTM vs Bidirectional LSTM vs Pooling Strategies
-# 
-# We compare four configurations under identical hyperparameters:
-# 1. **Uni-LSTM** — standard left-to-right LSTM, last hidden state
-# 2. **Bi-LSTM (last)** — bidirectional, concat of last forward + backward hidden
-# 3. **Bi-LSTM (mean)** — bidirectional, mean pooling over all timesteps
-# 4. **Bi-LSTM (2-layer, mean)** — deeper bidirectional with mean pooling
 
-# %%
-# We reuse BiLSTMSentiment but expose bidirectional as a flag
 class LSTMSentiment(nn.Module):
     """Unified LSTM classifier: unidirectional or bidirectional, last or mean pooling."""
 
@@ -397,14 +319,13 @@ class LSTMSentiment(nn.Module):
                 sentence = torch.cat([hidden[-2], hidden[-1]], dim=1)
             else:
                 sentence = hidden[-1]
-        else:  # mean
+        else:
             output, _ = pad_packed_sequence(packed_out, batch_first=True)
             mask      = (x != 0).unsqueeze(-1).float()
             output    = output * mask
             sentence  = output.sum(dim=1) / lengths.unsqueeze(1).float().to(output.device)
 
         return self.fc(self.dropout(sentence))
-
 
 ablation_configs = [
     {"bidirectional": False, "pooling": "last", "num_layers": 2, "label": "Uni-LSTM (last)"},
@@ -434,14 +355,12 @@ for cfg in ablation_configs:
     ablation_results.append({"label": cfg["label"], "best_test_acc": best_acc, "history": h})
     print(f"Best test acc: {best_acc:.4f}")
 
-# %%
-# Summary table
+
 print(f"{'Config':<22} {'Best Test Acc':>14}")
 print("-" * 38)
 for r in ablation_results:
     print(f"{r['label']:<22} {r['best_test_acc']:>14.4f}")
 
-# Plot test accuracy curves
 plt.figure(figsize=(9, 5))
 for r in ablation_results:
     plt.plot(range(1, ABLATION_EPOCHS + 1), r["history"]["test_acc"], marker="o", label=r["label"])
@@ -452,12 +371,7 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ## 9) Per-class Metrics (Precision, Recall, F1)
-# 
-# Accuracy alone can be misleading on balanced datasets. We compute per-class metrics to verify the model isn't biased toward one sentiment.
 
-# %%
 @torch.no_grad()
 def get_predictions(m, loader):
     m.eval()
@@ -470,10 +384,8 @@ def get_predictions(m, loader):
         all_labels.append(y)
     return torch.cat(all_preds), torch.cat(all_labels)
 
-
 preds, labels = get_predictions(model, test_dl)
 
-# Compute per-class precision, recall, F1
 for cls, name in enumerate(["Negative", "Positive"]):
     tp = ((preds == cls) & (labels == cls)).sum().item()
     fp = ((preds == cls) & (labels != cls)).sum().item()
@@ -486,10 +398,7 @@ for cls, name in enumerate(["Negative", "Positive"]):
 overall_acc = (preds == labels).float().mean().item()
 print(f"\nOverall Accuracy: {overall_acc:.4f}")
 
-# %% [markdown]
-# ## 10) Confusion Matrix
 
-# %%
 num_classes = 2
 conf_matrix = torch.zeros(num_classes, num_classes, dtype=torch.long)
 for p, l in zip(preds, labels):
@@ -509,23 +418,19 @@ plt.colorbar(im)
 plt.tight_layout()
 plt.show()
 
-# %% [markdown]
-# ## 11) Inference on Custom Reviews
 
-# %%
 @torch.no_grad()
 def predict(text: str, m=model):
     m.eval()
     ids = encode(text)
     if not ids:
         return "unknown", 0.0
-    x       = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)  # (1, L)
+    x       = torch.tensor(ids, dtype=torch.long).unsqueeze(0).to(device)
     lengths = torch.tensor([len(ids)], dtype=torch.long)
     logits  = m(x, lengths)
     probs   = F.softmax(logits, dim=1)[0]
     label   = int(logits.argmax(1).item())
     return ("positive" if label == 1 else "negative"), float(probs[label])
-
 
 test_reviews = [
     "This movie was absolutely fantastic! The acting was superb and the plot kept me on the edge of my seat.",
@@ -541,28 +446,3 @@ print("-" * 97)
 for review in test_reviews:
     sentiment, confidence = predict(review)
     print(f"{review[:68]:<70} {sentiment:<12} {confidence:.4f}")
-
-# %% [markdown]
-# ## Summary
-# 
-# | Component | Detail |
-# |---|---|
-# | Dataset | IMDB (25k train / 25k test) |
-# | Vocabulary | Top 20,000 words, min freq=2 |
-# | Max sequence length | 256 tokens |
-# | Embedding | 128-dim trainable |
-# | Architecture | Bidirectional LSTM (2 layers × 128 hidden/dir) |
-# | FC input | 256-dim (128 forward + 128 backward) |
-# | Sequence handling | Packed padded sequences |
-# | Dropout | 0.5 between layers and before FC |
-# | Gradient clipping | max_norm=1.0 |
-# | Optimizer | Adam (lr=1e-3, weight_decay=1e-4) |
-# | LR schedule | StepLR (step=3, gamma=0.5) |
-# 
-# **Why Bidirectional LSTM outperforms Unidirectional LSTM:**  
-# Sentiment cues can appear anywhere in a review — negations before a positive phrase ("not good"), or qualifiers after ("great, but..."). A Uni-LSTM only encodes context *up to* the current word; at the final hidden state it has seen all tokens but the representation is dominated by recent words. A Bi-LSTM reads the sequence in both directions and at each position has access to the full surrounding context, producing richer token representations and a more informative sentence vector.
-# 
-# **Pooling strategy:**  
-# `last` pooling uses only the final hidden states (one forward, one backward). `mean` pooling averages all timestep outputs, incorporating information from every position equally — often marginally better when sentiment is distributed across the full review rather than concentrated at the end.
-
-

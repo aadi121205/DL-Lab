@@ -1,0 +1,155 @@
+=== Cell 1 ===
+Device: cuda
+=== Cell 2 ===
+/opt/miniconda3/envs/AI/lib/python3.14/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+DatasetDict({
+    train: Dataset({
+        features: ['label', 'text'],
+        num_rows: 650000
+    })
+    test: Dataset({
+        features: ['label', 'text'],
+        num_rows: 50000
+    })
+})
+
+Sample review text : dr. goldberg offers everything i look for in a general practitioner.  he's nice and easy to talk to without being patronizing; he's always on time in seeing his patients; he's affiliated with a top-no
+Label (0-indexed)  : 4 → 5 stars
+=== Cell 3 ===
+<Figure size 700x400 with 1 Axes>
+[image saved: img_cell3_0.png]
+Total train reviews: 650,000
+Total test  reviews: 50,000
+=== Cell 4 ===
+Train class distribution:
+  Negative   (class 0): 24,128  (40.2%)
+  Neutral    (class 1): 11,949  (19.9%)
+  Positive   (class 2): 23,923  (39.9%)
+
+Train: 60,000  |  Test: 10,000
+=== Cell 5 ===
+Building vocabulary from training data...
+Vocabulary size : 20,002
+Max sequence len: 200
+=== Cell 6 ===
+Class weights: [0.8289124965667725, 1.6737802028656006, 0.836015522480011]
+Train batches: 938 | Test batches: 157
+=== Cell 7 ===
+GRUSentiment(
+  (embedding): Embedding(20002, 128, padding_idx=0)
+  (gru): GRU(128, 128, num_layers=2, batch_first=True, dropout=0.4, bidirectional=True)
+  (dropout): Dropout(p=0.4, inplace=False)
+  (fc): Linear(in_features=256, out_features=3, bias=True)
+)
+
+Trainable parameters: 3,055,619
+
+Parameter breakdown:
+  embedding.weight               (20002, 128)               2,560,256
+  gru.weight_ih_l0               (384, 128)                    49,152
+  gru.weight_hh_l0               (384, 128)                    49,152
+  gru.bias_ih_l0                 (384,)                           384
+  gru.bias_hh_l0                 (384,)                           384
+  gru.weight_ih_l0_reverse       (384, 128)                    49,152
+  gru.weight_hh_l0_reverse       (384, 128)                    49,152
+  gru.bias_ih_l0_reverse         (384,)                           384
+  gru.bias_hh_l0_reverse         (384,)                           384
+  gru.weight_ih_l1               (384, 256)                    98,304
+  gru.weight_hh_l1               (384, 128)                    49,152
+  gru.bias_ih_l1                 (384,)                           384
+  gru.bias_hh_l1                 (384,)                           384
+  gru.weight_ih_l1_reverse       (384, 256)                    98,304
+  gru.weight_hh_l1_reverse       (384, 128)                    49,152
+  gru.bias_ih_l1_reverse         (384,)                           384
+  gru.bias_hh_l1_reverse         (384,)                           384
+  fc.weight                      (3, 256)                         768
+  fc.bias                        (3,)                               3
+=== Cell 9 ===
+Epoch 01/10  train loss=0.8515  acc=0.6251  |  test  loss=0.7372  acc=0.7024  [31.7s]
+Epoch 02/10  train loss=0.7157  acc=0.7030  |  test  loss=0.6504  acc=0.7471  [32.3s]
+Epoch 03/10  train loss=0.6525  acc=0.7353  |  test  loss=0.6119  acc=0.7521  [32.2s]
+Epoch 04/10  train loss=0.6033  acc=0.7564  |  test  loss=0.5982  acc=0.7556  [31.1s]
+Epoch 05/10  train loss=0.5824  acc=0.7664  |  test  loss=0.5890  acc=0.7642  [31.2s]
+Epoch 06/10  train loss=0.5653  acc=0.7743  |  test  loss=0.6149  acc=0.7593  [31.3s]
+Epoch 07/10  train loss=0.5311  acc=0.7908  |  test  loss=0.5804  acc=0.7722  [31.6s]
+Epoch 08/10  train loss=0.5179  acc=0.7965  |  test  loss=0.5969  acc=0.7722  [31.6s]
+Epoch 09/10  train loss=0.5068  acc=0.7992  |  test  loss=0.5807  acc=0.7677  [31.4s]
+Epoch 10/10  train loss=0.4870  acc=0.8083  |  test  loss=0.6024  acc=0.7689  [31.5s]
+
+Best test accuracy: 0.7722
+=== Cell 10 ===
+<Figure size 1200x400 with 2 Axes>
+[image saved: img_cell10_1.png]
+=== Cell 11 ===
+
+--- Vanilla RNN ---
+Epoch 01/5  train loss=1.0682  acc=0.4584  |  test  loss=1.0090  acc=0.5721  [9.1s]
+Epoch 02/5  train loss=1.0071  acc=0.5526  |  test  loss=0.9581  acc=0.6176  [9.1s]
+Epoch 03/5  train loss=0.9769  acc=0.5761  |  test  loss=0.9151  acc=0.6240  [9.1s]
+Epoch 04/5  train loss=0.9197  acc=0.6083  |  test  loss=0.9204  acc=0.6159  [9.2s]
+Epoch 05/5  train loss=0.9070  acc=0.6126  |  test  loss=0.8687  acc=0.6216  [9.1s]
+Best acc: 0.6240  |  Params: 2,626,691
+
+--- Uni-LSTM ---
+Epoch 01/5  train loss=0.9714  acc=0.5547  |  test  loss=0.8439  acc=0.6542  [10.7s]
+Epoch 02/5  train loss=0.8461  acc=0.6378  |  test  loss=0.7742  acc=0.7042  [10.4s]
+Epoch 03/5  train loss=0.7460  acc=0.6894  |  test  loss=0.6763  acc=0.7242  [10.5s]
+Epoch 04/5  train loss=0.6689  acc=0.7252  |  test  loss=0.6397  acc=0.7486  [10.4s]
+Epoch 05/5  train loss=0.6442  acc=0.7357  |  test  loss=0.6256  acc=0.7537  [10.3s]
+Best acc: 0.7537  |  Params: 2,824,835
+
+--- Uni-GRU ---
+Epoch 01/5  train loss=0.9322  acc=0.5716  |  test  loss=0.7309  acc=0.6872  [9.8s]
+Epoch 02/5  train loss=0.7217  acc=0.6968  |  test  loss=0.6683  acc=0.7306  [10.3s]
+Epoch 03/5  train loss=0.6507  acc=0.7322  |  test  loss=0.6137  acc=0.7499  [9.8s]
+Epoch 04/5  train loss=0.5983  acc=0.7592  |  test  loss=0.5883  acc=0.7534  [9.7s]
+Epoch 05/5  train loss=0.5770  acc=0.7675  |  test  loss=0.5827  acc=0.7578  [9.9s]
+Best acc: 0.7578  |  Params: 2,758,787
+
+--- Bi-LSTM ---
+Epoch 01/5  train loss=0.9338  acc=0.5725  |  test  loss=0.8166  acc=0.6524  [18.1s]
+Epoch 02/5  train loss=0.7993  acc=0.6576  |  test  loss=0.7302  acc=0.6847  [18.2s]
+Epoch 03/5  train loss=0.7302  acc=0.6980  |  test  loss=0.6923  acc=0.7192  [18.3s]
+Epoch 04/5  train loss=0.6623  acc=0.7294  |  test  loss=0.6464  acc=0.7517  [18.2s]
+Epoch 05/5  train loss=0.6322  acc=0.7427  |  test  loss=0.6270  acc=0.7486  [18.2s]
+Best acc: 0.7517  |  Params: 3,220,483
+
+--- Bi-GRU ---
+Epoch 01/5  train loss=0.9119  acc=0.5736  |  test  loss=0.7142  acc=0.6858  [17.0s]
+Epoch 02/5  train loss=0.7181  acc=0.6966  |  test  loss=0.6720  acc=0.7303  [17.1s]
+Epoch 03/5  train loss=0.6456  acc=0.7343  |  test  loss=0.6023  acc=0.7628  [17.1s]
+Epoch 04/5  train loss=0.5890  acc=0.7621  |  test  loss=0.5853  acc=0.7727  [17.0s]
+Epoch 05/5  train loss=0.5696  acc=0.7719  |  test  loss=0.5914  acc=0.7779  [17.0s]
+Best acc: 0.7779  |  Params: 3,055,619
+=== Cell 12 ===
+Config                   Params  Best Test Acc
+----------------------------------------------
+Vanilla RNN           2,626,691         0.6240
+Uni-LSTM              2,824,835         0.7537
+Uni-GRU               2,758,787         0.7578
+Bi-LSTM               3,220,483         0.7517
+Bi-GRU                3,055,619         0.7779
+<Figure size 1400x500 with 3 Axes>
+[image saved: img_cell12_2.png]
+=== Cell 13 ===
+Class         Precision     Recall         F1    Support
+------------------------------------------------------
+Negative         0.8759     0.7781     0.8241      4,074
+Neutral          0.4943     0.5868     0.5366      1,999
+Positive         0.8348     0.8520     0.8434      3,927
+
+Overall Accuracy: 0.7689
+=== Cell 14 ===
+<Figure size 600x500 with 2 Axes>
+[image saved: img_cell14_3.png]
+=== Cell 15 ===
+Review                                                         Sentiment    Conf   Neg / Neu / Pos
+----------------------------------------------------------------------------------------------------
+This moisturizer is absolutely amazing. My skin has never fe   Positive   0.9967   0.00  0.00  1.00
+Terrible product. It broke me out badly and the smell is awf   Negative   0.9914   0.99  0.01  0.00
+It's okay for the price. Nothing special but gets the job do   Neutral    0.7858   0.19  0.79  0.03
+I've repurchased this serum three times. Works perfectly for   Positive   0.5865   0.05  0.36  0.59
+The packaging looked nice but the product itself was disappo   Negative   0.8455   0.85  0.15  0.00
+Decent shampoo, lathers well and smells nice. Hair feels cle   Neutral    0.8417   0.14  0.84  0.02

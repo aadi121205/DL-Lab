@@ -1,0 +1,238 @@
+=== Cell 1 ===
+device(type='cuda')
+=== Cell 2 ===
+Chars: 139441
+text
+"O my Luve's like a red, red rose
+That’s newly sprung in June;
+O my Luve's like the melodie
+That’s sweetly play'd in tune.
+
+As fair art thou, my bonnie lass,
+So deep in luve am I:
+And I will luve thee still, my dear,
+Till a’ the seas gang dry:
+
+Till a’ the seas gang dry, my dear,
+And the rocks melt wi’ the sun:
+I will luve thee still, my dear,
+While the sands o’ life shall run.
+
+And fare thee well, my only Luve
+And fare thee well, a while!
+And I will come again, my Luve,
+Tho’ it were ten th
+=== Cell 3 ===
+Tokens: 29699
+['text', '"', 'o', 'my', "luve's", 'like', 'a', 'red', ',', 'red', 'rose', 'that', 's', 'newly', 'sprung', 'in', 'june', ';', 'o', 'my', "luve's", 'like', 'the', 'melodie', 'that', 's', 'sweetly', "play'd", 'in', 'tune', '.', 'as', 'fair', 'art', 'thou', ',', 'my', 'bonnie', 'lass', ',', 'so', 'deep', 'in', 'luve', 'am', 'i', ':', 'and', 'i', 'will']
+Vocab size: 5321
+Most common: [(',', 2558), ('the', 1806), ('and', 1213), ('of', 757), ('i', 695), ('.', 622), ('-', 537), ('to', 424), ('in', 374), ('a', 373)]
+=== Cell 4 ===
+Corpus tokens: 35681
+['<bos>', 'text', '<eos>', '<bos>', '"', 'o', 'my', "luve's", 'like', 'a', 'red', ',', 'red', 'rose', '<eos>', '<bos>', 'that', 's', 'newly', 'sprung', 'in', 'june', ';', '<eos>', '<bos>', 'o', 'my', "luve's", 'like', 'the', 'melodie', '<eos>', '<bos>', 'that', 's', 'sweetly', "play'd", 'in', 'tune', '.', '<eos>', '<bos>', 'as', 'fair', 'art', 'thou', ',', 'my', 'bonnie', 'lass', ',', '<eos>', '<bos>', 'so', 'deep', 'in', 'luve', 'am', 'i', ':']
+(torch.Size([64, 20]), torch.Size([64, 20]))
+=== Cell 7 ===
+Training One-Hot RNN...
+epoch 1/8 step 100  loss=6.2118
+epoch 1/8 step 200  loss=5.7652
+epoch 1/8 step 300  loss=5.2817
+epoch 1/8 step 400  loss=4.8935
+epoch 1/8 step 500  loss=4.4628
+epoch 2/8 step 600  loss=1.6419
+epoch 2/8 step 700  loss=3.5002
+epoch 2/8 step 800  loss=3.0477
+epoch 2/8 step 900  loss=2.5783
+epoch 2/8 step 1000  loss=2.1418
+epoch 2/8 step 1100  loss=1.7557
+epoch 3/8 step 1200  loss=1.1758
+epoch 3/8 step 1300  loss=1.1708
+epoch 3/8 step 1400  loss=1.0037
+epoch 3/8 step 1500  loss=0.8674
+epoch 3/8 step 1600  loss=0.7545
+epoch 4/8 step 1700  loss=0.1755
+epoch 4/8 step 1800  loss=0.5878
+epoch 4/8 step 1900  loss=0.5461
+epoch 4/8 step 2000  loss=0.5198
+epoch 4/8 step 2100  loss=0.5004
+epoch 4/8 step 2200  loss=0.4863
+epoch 5/8 step 2300  loss=0.3118
+epoch 5/8 step 2400  loss=0.4330
+epoch 5/8 step 2500  loss=0.4280
+epoch 5/8 step 2600  loss=0.4250
+epoch 5/8 step 2700  loss=0.4155
+epoch 6/8 step 2800  loss=0.0558
+epoch 6/8 step 2900  loss=0.3809
+epoch 6/8 step 3000  loss=0.3886
+epoch 6/8 step 3100  loss=0.3885
+epoch 6/8 step 3200  loss=0.3822
+epoch 6/8 step 3300  loss=0.3907
+epoch 7/8 step 3400  loss=0.2010
+epoch 7/8 step 3500  loss=0.3669
+epoch 7/8 step 3600  loss=0.3653
+epoch 7/8 step 3700  loss=0.3744
+epoch 7/8 step 3800  loss=0.3700
+epoch 8/8 step 3900  loss=0.0031
+epoch 8/8 step 4000  loss=0.3433
+epoch 8/8 step 4100  loss=0.3520
+epoch 8/8 step 4200  loss=0.3620
+epoch 8/8 step 4300  loss=0.3568
+epoch 8/8 step 4400  loss=0.3606
+
+Training One-Hot LSTM...
+epoch 1/8 step 100  loss=6.2096
+epoch 1/8 step 200  loss=5.4502
+epoch 1/8 step 300  loss=5.0820
+epoch 1/8 step 400  loss=4.7517
+epoch 1/8 step 500  loss=4.4514
+epoch 2/8 step 600  loss=1.7532
+epoch 2/8 step 700  loss=3.8987
+epoch 2/8 step 800  loss=3.6623
+epoch 2/8 step 900  loss=3.4200
+epoch 2/8 step 1000  loss=3.1842
+epoch 2/8 step 1100  loss=2.9589
+epoch 3/8 step 1200  loss=2.2994
+epoch 3/8 step 1300  loss=2.4796
+epoch 3/8 step 1400  loss=2.2857
+epoch 3/8 step 1500  loss=2.0977
+epoch 3/8 step 1600  loss=1.9330
+epoch 4/8 step 1700  loss=0.4746
+epoch 4/8 step 1800  loss=1.5612
+epoch 4/8 step 1900  loss=1.4442
+epoch 4/8 step 2000  loss=1.3325
+epoch 4/8 step 2100  loss=1.2240
+epoch 4/8 step 2200  loss=1.1413
+epoch 5/8 step 2300  loss=0.7098
+epoch 5/8 step 2400  loss=0.9388
+epoch 5/8 step 2500  loss=0.8723
+epoch 5/8 step 2600  loss=0.8196
+epoch 5/8 step 2700  loss=0.7718
+epoch 6/8 step 2800  loss=0.0980
+epoch 6/8 step 2900  loss=0.6441
+epoch 6/8 step 3000  loss=0.6213
+epoch 6/8 step 3100  loss=0.5944
+epoch 6/8 step 3200  loss=0.5660
+epoch 6/8 step 3300  loss=0.5529
+epoch 7/8 step 3400  loss=0.2833
+epoch 7/8 step 3500  loss=0.4826
+epoch 7/8 step 3600  loss=0.4726
+epoch 7/8 step 3700  loss=0.4644
+epoch 7/8 step 3800  loss=0.4564
+epoch 8/8 step 3900  loss=0.0042
+epoch 8/8 step 4000  loss=0.4124
+epoch 8/8 step 4100  loss=0.4192
+epoch 8/8 step 4200  loss=0.4128
+epoch 8/8 step 4300  loss=0.4061
+epoch 8/8 step 4400  loss=0.4086
+(37.838054180145264, 71.65408778190613)
+=== Cell 8 ===
+Training Embedding RNN...
+epoch 1/8 step 100  loss=5.3485
+epoch 1/8 step 200  loss=4.2096
+epoch 1/8 step 300  loss=3.4734
+epoch 1/8 step 400  loss=2.8613
+epoch 1/8 step 500  loss=2.3631
+epoch 2/8 step 600  loss=0.7788
+epoch 2/8 step 700  loss=1.6118
+epoch 2/8 step 800  loss=1.3906
+epoch 2/8 step 900  loss=1.1998
+epoch 2/8 step 1000  loss=1.0563
+epoch 2/8 step 1100  loss=0.9395
+epoch 3/8 step 1200  loss=0.6764
+epoch 3/8 step 1300  loss=0.7331
+epoch 3/8 step 1400  loss=0.6859
+epoch 3/8 step 1500  loss=0.6405
+epoch 3/8 step 1600  loss=0.6068
+epoch 4/8 step 1700  loss=0.1496
+epoch 4/8 step 1800  loss=0.5059
+epoch 4/8 step 1900  loss=0.5036
+epoch 4/8 step 2000  loss=0.4901
+epoch 4/8 step 2100  loss=0.4822
+epoch 4/8 step 2200  loss=0.4782
+epoch 5/8 step 2300  loss=0.3010
+epoch 5/8 step 2400  loss=0.4212
+epoch 5/8 step 2500  loss=0.4266
+epoch 5/8 step 2600  loss=0.4258
+epoch 5/8 step 2700  loss=0.4302
+epoch 6/8 step 2800  loss=0.0581
+epoch 6/8 step 2900  loss=0.3810
+epoch 6/8 step 3000  loss=0.3968
+epoch 6/8 step 3100  loss=0.3969
+epoch 6/8 step 3200  loss=0.4015
+epoch 6/8 step 3300  loss=0.4054
+epoch 7/8 step 3400  loss=0.2093
+epoch 7/8 step 3500  loss=0.3676
+epoch 7/8 step 3600  loss=0.3808
+epoch 7/8 step 3700  loss=0.3834
+epoch 7/8 step 3800  loss=0.3905
+epoch 8/8 step 3900  loss=0.0032
+epoch 8/8 step 4000  loss=0.3560
+epoch 8/8 step 4100  loss=0.3635
+epoch 8/8 step 4200  loss=0.3723
+epoch 8/8 step 4300  loss=0.3743
+epoch 8/8 step 4400  loss=0.3797
+
+Training Embedding LSTM...
+epoch 1/8 step 100  loss=5.5953
+epoch 1/8 step 200  loss=4.6332
+epoch 1/8 step 300  loss=4.0998
+epoch 1/8 step 400  loss=3.6188
+epoch 1/8 step 500  loss=3.1917
+epoch 2/8 step 600  loss=1.1388
+epoch 2/8 step 700  loss=2.4308
+epoch 2/8 step 800  loss=2.1499
+epoch 2/8 step 900  loss=1.9164
+epoch 2/8 step 1000  loss=1.7152
+epoch 2/8 step 1100  loss=1.5305
+epoch 3/8 step 1200  loss=1.1377
+epoch 3/8 step 1300  loss=1.2158
+epoch 3/8 step 1400  loss=1.1153
+epoch 3/8 step 1500  loss=1.0342
+epoch 3/8 step 1600  loss=0.9602
+epoch 4/8 step 1700  loss=0.2363
+epoch 4/8 step 1800  loss=0.7825
+epoch 4/8 step 1900  loss=0.7466
+epoch 4/8 step 2000  loss=0.7014
+epoch 4/8 step 2100  loss=0.6696
+epoch 4/8 step 2200  loss=0.6356
+epoch 5/8 step 2300  loss=0.3998
+epoch 5/8 step 2400  loss=0.5452
+epoch 5/8 step 2500  loss=0.5253
+epoch 5/8 step 2600  loss=0.5086
+epoch 5/8 step 2700  loss=0.4972
+epoch 6/8 step 2800  loss=0.0647
+epoch 6/8 step 2900  loss=0.4350
+epoch 6/8 step 3000  loss=0.4292
+epoch 6/8 step 3100  loss=0.4258
+epoch 6/8 step 3200  loss=0.4240
+epoch 6/8 step 3300  loss=0.4160
+epoch 7/8 step 3400  loss=0.2178
+epoch 7/8 step 3500  loss=0.3791
+epoch 7/8 step 3600  loss=0.3786
+epoch 7/8 step 3700  loss=0.3806
+epoch 7/8 step 3800  loss=0.3773
+epoch 8/8 step 3900  loss=0.0037
+epoch 8/8 step 4000  loss=0.3433
+epoch 8/8 step 4100  loss=0.3483
+epoch 8/8 step 4200  loss=0.3521
+epoch 8/8 step 4300  loss=0.3571
+epoch 8/8 step 4400  loss=0.3563
+(27.023733615875244, 29.4639949798584)
+=== Cell 9 ===
+<Figure size 800x400 with 1 Axes>
+[image saved: img_cell9_0.png]
+{'One-Hot RNN': 37.838054180145264,
+ 'One-Hot LSTM': 71.65408778190613,
+ 'Emb RNN': 27.023733615875244,
+ 'Emb LSTM': 29.4639949798584}
+=== Cell 10 ===
+=== One-Hot RNN ===
+in the silent night
+
+=== One-Hot LSTM ===
+in the silent night - whom we know know
+
+=== Embedding RNN ===
+in the silent night ,
+
+=== Embedding LSTM ===
+in the silent night of south ,and sound ,
