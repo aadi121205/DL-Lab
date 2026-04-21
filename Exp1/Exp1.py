@@ -36,6 +36,7 @@ numpy_time = end_time - start_time
 print(f"Numpy Array took: {numpy_time:.6f} seconds")
 
 # Pytorch Tensor
+# to Be or Not To Be That IS the Qution
 # Pytorch tensors are similar to Numpy arrays but with added features for
 # deep learning, like GPU acceleration and automatic differentiation.
 pytorch_tensor_one = torch.arange(N)
