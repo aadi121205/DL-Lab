@@ -1,0 +1,9 @@
+The Transformer is a deep learning architecture introduced in the paper "Attention Is All You Need" (Vaswani et al., 2017). Unlike RNNs and LSTMs, which process sequences step-by-step, the Transformer processes entire sequences in parallel using self-attention, making it faster to train and better at capturing long-range dependencies in text.
+
+In this experiment, the complete works of Shakespeare are downloaded and used as training data for a character-level language model. The text is preprocessed by building a vocabulary of unique characters, each mapped to an integer index. Fixed-length sequences of 128 characters are sampled as input, with the target being the next character at every position — a task known as causal language modelling.
+
+The Transformer architecture consists of an encoder and a decoder stack. Each encoder layer contains a multi-head self-attention sub-layer followed by a position-wise feed-forward network, both wrapped with residual connections and Layer Normalisation. Before attention, sinusoidal positional encodings are added to the character embeddings so the model can distinguish sequence positions. The decoder adds a causal mask to its self-attention layer, ensuring each position only attends to previous tokens. A cross-attention sub-layer then lets the decoder attend to the encoder's output, conditioning generation on the source context.
+
+The decoder's final hidden states are projected to vocabulary-size logits via a linear layer tied to the shared embedding table. During generation, outputs are sampled using temperature scaling and top-k filtering to control randomness.
+
+The model is trained for 3000 steps by minimizing cross-entropy loss, optimised with AdamW and a cosine annealing learning rate schedule. Overall, the Transformer provides a powerful and parallelisable approach to sequence modelling, effectively learning Shakespearean style from raw character sequences.

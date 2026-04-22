@@ -1,0 +1,95 @@
+DL Lab — Experiments Summary
+============================
+
+Exp 1 — Benchmarking Python vs NumPy vs PyTorch
+Libraries: torch, numpy, time
+This experiment benchmarks element-wise addition across three data structures: Python
+lists, NumPy arrays, and PyTorch tensors, over one million elements. The goal is to
+show how vectorised operations dramatically outperform pure Python loops. NumPy uses
+optimised C kernels under the hood, giving a large speedup over list comprehensions.
+PyTorch adds GPU-ready tensor operations on top of that. The built-in time module is
+used to measure wall-clock duration for each approach, making the performance gap
+concrete and measurable.
+
+Exp 2 — MNIST Neural Network from Scratch with NumPy
+Libraries: numpy, matplotlib, torch, torchvision, os, csv, json, math
+A two-layer fully-connected network is built entirely in NumPy — no autograd. Forward
+pass, cross-entropy loss, softmax, and backpropagation gradients are all hand-coded.
+Torchvision is used only to download the MNIST dataset; all training logic lives in
+NumPy. Matplotlib plots training curves. This experiment builds intuition for how
+gradient descent actually works before higher-level frameworks abstract it away.
+
+Exp 3 — CNN on CIFAR-10 with ResNet18
+Libraries:
+torch, torch.nn, torch.optim, torchvision, torchsummary
+A ResNet18 model from torchvision.models is fine-tuned on CIFAR-10, a 10-class image
+classification benchmark. DataLoader handles batching and shuffling; transforms apply
+normalisation. torch.nn.functional provides activation functions and torchsummary
+prints a layer-by-layer parameter count. The experiment demonstrates transfer learning
+and how a pre-designed deep residual architecture can be adapted quickly to a new task.
+
+Exp 4 — Word-Level Language Model on Poems
+Libraries:
+torch, torch.nn, torch.nn.functional, numpy, re, dataclasses, collections
+An LSTM-based language model is trained on a CSV of 100 poems to generate new text
+word by word. The vocabulary is built with collections.Counter; re handles text
+cleaning. torch.utils.data.Dataset and DataLoader manage sequence batches. The
+dataclasses module stores hyperparameters cleanly. At inference, the model samples
+the next word from the softmax distribution, producing poem-like output.
+
+Exp 5 — IMDB Sentiment Analysis with RNN
+Libraries:
+torch, torch.nn, numpy, datasets (HuggingFace), collections, re
+The HuggingFace datasets library streams the IMDB movie-review corpus (50 k reviews,
+binary labels). Reviews are tokenised, a vocabulary built from training data, and
+sequences padded with torch.nn.utils.rnn.pad_sequence. A single-layer RNN classifies
+each review as positive or negative. This experiment introduces sequence modelling
+and the vanishing-gradient problem that motivates LSTM and GRU cells.
+
+Exp 6 — Stock Price Prediction with LSTM
+Libraries:
+torch, torch.nn, numpy, pandas, matplotlib, yfinance
+Apple (AAPL) closing prices from 2018–2023 are fetched via yfinance and loaded into a
+pandas DataFrame. A sliding window creates input sequences; data is normalised before
+training. An LSTM learns to forecast the next closing price. Matplotlib plots both the
+raw price history and the model's predictions against actuals, illustrating how LSTMs
+capture temporal dependencies in financial time-series data.
+
+Exp 7 — Comparing RNN / GRU / LSTM on IMDB
+Libraries:
+torch, torch.nn, numpy, datasets, collections, re, torch.nn.utils.rnn
+The same IMDB task from Exp 5 is re-run with a unified SentimentRNN class that can
+swap between vanilla RNN, GRU, and LSTM cells and toggle bidirectionality. Sequences
+are packed with pack_padded_sequence for efficiency. All three variants are trained and
+their accuracy/loss curves plotted side-by-side, giving a direct empirical comparison
+of how gating mechanisms improve over vanilla RNNs on long text sequences.
+
+Exp 8 — Bidirectional LSTM on IMDB
+Libraries:
+torch, torch.nn, numpy, datasets, collections, re, torch.nn.utils.rnn
+A dedicated BiLSTM model reads each review forward and backward simultaneously,
+concatenating both directions' hidden states before the classification head. Stacked
+LSTM layers and dropout regularisation are added. pack_padded_sequence handles
+variable-length inputs without wasting compute on padding tokens. The experiment shows
+how bidirectional context improves sentiment accuracy compared to unidirectional models
+from earlier experiments.
+
+Exp 9 — Yelp Review Classification with GRU
+Libraries:
+torch, torch.nn, numpy, datasets, collections, re, torch.nn.utils.rnn
+The Yelp Full dataset (5-star rating scale) replaces IMDB, making this a 5-class
+problem instead of binary. Class imbalance is addressed with weighted cross-entropy
+loss computed from label frequencies. A bidirectional GRU with stacked layers serves
+as the classifier. This experiment extends the sentiment pipeline to fine-grained
+multi-class classification and demonstrates how to handle skewed label distributions
+in practice.
+
+Exp 10 — GPT-Style Transformer on Shakespeare
+Libraries:
+torch, torch.nn, torch.nn.functional, numpy, matplotlib, urllib
+A character-level transformer (GPT-like decoder-only) is trained from scratch on the
+complete works of Shakespeare, downloaded via urllib. Multi-head self-attention,
+positional embeddings, and feed-forward sub-layers are all implemented manually in
+PyTorch. numpy and matplotlib track and plot the training loss curve. The experiment
+demonstrates the full transformer architecture — attention, residual connections, layer
+norm — and generates coherent Shakespearean-style text after training.

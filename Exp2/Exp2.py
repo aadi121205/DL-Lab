@@ -1,11 +1,9 @@
 import os
 import csv
 import json
-import time
 import math
 import numpy as np
 import matplotlib.pyplot as plt
-
 import torch
 import torchvision
 
@@ -14,14 +12,17 @@ def set_seed(seed: int = 42):
     np.random.seed(seed)
     torch.manual_seed(seed)
 
+
 def one_hot(y: np.ndarray, num_classes: int = 10) -> np.ndarray:
     oh = np.zeros((y.shape[0], num_classes), dtype=np.float32)
     oh[np.arange(y.shape[0]), y] = 1.0
     return oh
 
+
 def accuracy_from_logits(logits: np.ndarray, y_true: np.ndarray) -> float:
     preds = np.argmax(logits, axis=1)
     return float(np.mean(preds == y_true))
+
 
 def ensure_dir(path: str):
     os.makedirs(path, exist_ok=True)
@@ -30,21 +31,27 @@ def ensure_dir(path: str):
 def relu(z):
     return np.maximum(0.0, z)
 
+
 def drelu(z):
     return (z > 0).astype(np.float32)
+
 
 def sigmoid(z):
     z = np.clip(z, -40, 40)
     return 1.0 / (1.0 + np.exp(-z))
 
+
 def dsigmoid_from_a(a):
     return a * (1.0 - a)
+
 
 def tanh(z):
     return np.tanh(z)
 
+
 def dtanh_from_a(a):
     return 1.0 - a**2
+
 
 def softmax(logits):
     shifted = logits - np.max(logits, axis=1, keepdims=True)
@@ -58,7 +65,10 @@ class NeuralNetwork:
     Hidden activations: relu/sigmoid/tanh
     Output activation: softmax (handled in loss for stability)
     """
-    def __init__(self, layer_sizes, activation="relu", lr=0.01, weight_decay=0.0, seed=42):
+
+    def __init__(
+        self, layer_sizes, activation="relu", lr=0.01, weight_decay=0.0, seed=42
+    ):
         """
         layer_sizes: list like [784, 256, 128, 10]
         activation: "relu" | "sigmoid" | "tanh"
@@ -102,7 +112,9 @@ class NeuralNetwork:
             else:
                 scale = math.sqrt(1.0 / fan_in)
 
-            W_i = (self.rng.standard_normal((fan_in, fan_out)).astype(np.float32)) * scale
+            W_i = (
+                self.rng.standard_normal((fan_in, fan_out)).astype(np.float32)
+            ) * scale
             b_i = np.zeros((1, fan_out), dtype=np.float32)
 
             self.W.append(W_i)
@@ -244,11 +256,18 @@ def make_mnist_loaders(batch_size=64, train_val_split=55000, seed=42):
         train_dataset_full, [train_val_split, val_size], generator=gen
     )
 
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = torch.utils.data.DataLoader(
+        train_dataset, batch_size=batch_size, shuffle=True
+    )
+    val_loader = torch.utils.data.DataLoader(
+        val_dataset, batch_size=batch_size, shuffle=False
+    )
+    test_loader = torch.utils.data.DataLoader(
+        test_dataset, batch_size=batch_size, shuffle=False
+    )
 
     return train_loader, val_loader, test_loader
+
 
 def torch_batch_to_numpy(images, labels):
     """
@@ -291,7 +310,9 @@ def run_one_experiment(cfg, out_dir):
         json.dump(cfg, f, indent=2)
 
     train_loader, val_loader, test_loader = make_mnist_loaders(
-        batch_size=cfg["batch_size"], train_val_split=cfg.get("train_val_split", 55000), seed=cfg["seed"]
+        batch_size=cfg["batch_size"],
+        train_val_split=cfg.get("train_val_split", 55000),
+        seed=cfg["seed"],
     )
 
     layer_sizes = [784] + cfg["hidden_layers"] + [10]
@@ -372,13 +393,15 @@ def run_one_experiment(cfg, out_dir):
         writer = csv.writer(f)
         writer.writerow(["epoch", "train_loss", "train_acc", "val_loss", "val_acc"])
         for i in range(len(history["epoch"])):
-            writer.writerow([
-                history["epoch"][i],
-                history["train_loss"][i],
-                history["train_acc"][i],
-                history["val_loss"][i],
-                history["val_acc"][i],
-            ])
+            writer.writerow(
+                [
+                    history["epoch"][i],
+                    history["train_loss"][i],
+                    history["train_acc"][i],
+                    history["val_loss"][i],
+                    history["val_acc"][i],
+                ]
+            )
 
     plot_metrics(history, out_dir)
 
@@ -393,6 +416,7 @@ def run_one_experiment(cfg, out_dir):
         json.dump(final, f, indent=2)
 
     return final
+
 
 def plot_metrics(history, out_dir):
     epochs = history["epoch"]
@@ -427,14 +451,66 @@ def main():
     ensure_dir(base_out)
 
     experiments = [
-        {"name": "mlp_1x128_relu", "hidden_layers": [128], "activation": "relu", "lr": 0.05, "weight_decay": 0.0, "batch_size": 64, "epochs": 10, "seed": 42},
-        {"name": "mlp_1x256_relu", "hidden_layers": [256], "activation": "relu", "lr": 0.05, "weight_decay": 0.0, "batch_size": 64, "epochs": 10, "seed": 42},
-        {"name": "mlp_1x256_tanh", "hidden_layers": [256], "activation": "tanh", "lr": 0.05, "weight_decay": 0.0, "batch_size": 64, "epochs": 10, "seed": 42},
-
-        {"name": "mlp_2x256_128_relu", "hidden_layers": [256, 128], "activation": "relu", "lr": 0.05, "weight_decay": 0.0, "batch_size": 64, "epochs": 12, "seed": 42},
-        {"name": "mlp_2x256_128_sigmoid", "hidden_layers": [256, 128], "activation": "sigmoid", "lr": 0.05, "weight_decay": 0.0, "batch_size": 64, "epochs": 12, "seed": 42},
-
-        {"name": "mlp_2x256_128_relu_l2", "hidden_layers": [256, 128], "activation": "relu", "lr": 0.05, "weight_decay": 1e-4, "batch_size": 64, "epochs": 12, "seed": 42},
+        {
+            "name": "mlp_1x128_relu",
+            "hidden_layers": [128],
+            "activation": "relu",
+            "lr": 0.05,
+            "weight_decay": 0.0,
+            "batch_size": 64,
+            "epochs": 10,
+            "seed": 42,
+        },
+        {
+            "name": "mlp_1x256_relu",
+            "hidden_layers": [256],
+            "activation": "relu",
+            "lr": 0.05,
+            "weight_decay": 0.0,
+            "batch_size": 64,
+            "epochs": 10,
+            "seed": 42,
+        },
+        {
+            "name": "mlp_1x256_tanh",
+            "hidden_layers": [256],
+            "activation": "tanh",
+            "lr": 0.05,
+            "weight_decay": 0.0,
+            "batch_size": 64,
+            "epochs": 10,
+            "seed": 42,
+        },
+        {
+            "name": "mlp_2x256_128_relu",
+            "hidden_layers": [256, 128],
+            "activation": "relu",
+            "lr": 0.05,
+            "weight_decay": 0.0,
+            "batch_size": 64,
+            "epochs": 12,
+            "seed": 42,
+        },
+        {
+            "name": "mlp_2x256_128_sigmoid",
+            "hidden_layers": [256, 128],
+            "activation": "sigmoid",
+            "lr": 0.05,
+            "weight_decay": 0.0,
+            "batch_size": 64,
+            "epochs": 12,
+            "seed": 42,
+        },
+        {
+            "name": "mlp_2x256_128_relu_l2",
+            "hidden_layers": [256, 128],
+            "activation": "relu",
+            "lr": 0.05,
+            "weight_decay": 1e-4,
+            "batch_size": 64,
+            "epochs": 12,
+            "seed": 42,
+        },
     ]
 
     summary_rows = []
@@ -442,23 +518,35 @@ def main():
         out_dir = os.path.join(base_out, cfg["name"])
         final = run_one_experiment(cfg, out_dir)
 
-        summary_rows.append({
-            "name": cfg["name"],
-            "hidden_layers": str(cfg["hidden_layers"]),
-            "activation": cfg["activation"],
-            "lr": cfg["lr"],
-            "weight_decay": cfg["weight_decay"],
-            "batch_size": cfg["batch_size"],
-            "epochs": cfg["epochs"],
-            "best_val_acc": final["best_val_acc"],
-            "test_acc": final["test_acc"],
-        })
+        summary_rows.append(
+            {
+                "name": cfg["name"],
+                "hidden_layers": str(cfg["hidden_layers"]),
+                "activation": cfg["activation"],
+                "lr": cfg["lr"],
+                "weight_decay": cfg["weight_decay"],
+                "batch_size": cfg["batch_size"],
+                "epochs": cfg["epochs"],
+                "best_val_acc": final["best_val_acc"],
+                "test_acc": final["test_acc"],
+            }
+        )
 
     summary_path = os.path.join(base_out, "experiment_summary.csv")
     with open(summary_path, "w", newline="") as f:
         writer = csv.DictWriter(
             f,
-            fieldnames=["name", "hidden_layers", "activation", "lr", "weight_decay", "batch_size", "epochs", "best_val_acc", "test_acc"],
+            fieldnames=[
+                "name",
+                "hidden_layers",
+                "activation",
+                "lr",
+                "weight_decay",
+                "batch_size",
+                "epochs",
+                "best_val_acc",
+                "test_acc",
+            ],
         )
         writer.writeheader()
         for row in summary_rows:
@@ -470,6 +558,7 @@ def main():
     print("  - history.csv")
     print("  - loss.png, accuracy.png")
     print("  - final_results.json")
+
 
 if __name__ == "__main__":
     main()
